@@ -1,0 +1,1295 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <script src="js/translations.js"></script>
+    <script>
+        function applyLanguageToMarket() {
+            const currentLang = localStorage.getItem('language') || getSystemLanguage();
+            if (currentLang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+            
+            // Başlıklar
+            const titleEl = document.querySelector('h1');
+            if (titleEl) titleEl.innerHTML = t('market_title');
+            
+            const backBtn = document.querySelector('.back-btn span');
+            if (backBtn) backBtn.innerHTML = t('back');
+            
+            // Sekme butonları
+            const coinsTabLabel = document.getElementById('coinsTabLabel');
+            if (coinsTabLabel) coinsTabLabel.innerHTML = t('coins');
+            
+            const packagesTabLabel = document.getElementById('packagesTabLabel');
+            if (packagesTabLabel) packagesTabLabel.innerHTML = t('packages');
+            
+            const heartsTabLabel = document.getElementById('heartsTabLabel');
+            if (heartsTabLabel) heartsTabLabel.innerHTML = t('hearts');
+            
+            const vipTabLabel = document.getElementById('vipTabLabel');
+            if (vipTabLabel) vipTabLabel.innerHTML = t('vip');
+            
+            const customTabLabel = document.getElementById('customTabLabel');
+            if (customTabLabel) customTabLabel.innerHTML = t('custom_amount');
+            
+            // Jeton paketleri başlığı
+            const coinPackagesTitle = document.getElementById('coinPackagesTitle');
+            if (coinPackagesTitle) coinPackagesTitle.innerHTML = t('coin_packages');
+            
+            // Ürün isimleri
+            const product50Name = document.getElementById('product50Name');
+            if (product50Name) product50Name.innerHTML = "50 " + t('coins');
+            
+            const product150Name = document.getElementById('product150Name');
+            if (product150Name) product150Name.innerHTML = "150 " + t('coins');
+            
+            const product400Name = document.getElementById('product400Name');
+            if (product400Name) product400Name.innerHTML = "400 " + t('coins');
+            
+            const product1000Name = document.getElementById('product1000Name');
+            if (product1000Name) product1000Name.innerHTML = "1000 " + t('coins');
+            
+            // Etiketler
+            const popularLabel = document.getElementById('popularLabel');
+            if (popularLabel) popularLabel.innerHTML = t('popular');
+            
+            const bonus20Label = document.getElementById('bonus20Label');
+            if (bonus20Label) bonus20Label.innerHTML = "+20 " + t('bonus');
+            
+            const bonus50Label = document.getElementById('bonus50Label');
+            if (bonus50Label) bonus50Label.innerHTML = "+50 " + t('bonus');
+            
+            const bonus200Label = document.getElementById('bonus200Label');
+            if (bonus200Label) bonus200Label.innerHTML = "+200 " + t('bonus');
+            
+            const bestLabel = document.getElementById('bestLabel');
+            if (bestLabel) bestLabel.innerHTML = t('best');
+            
+            // Açıklamalar
+            const product50Desc = document.getElementById('product50Desc');
+            if (product50Desc) product50Desc.innerHTML = t('starter_pack');
+            
+            const product150Desc = document.getElementById('product150Desc');
+            if (product150Desc) product150Desc.innerHTML = t('popular_pack');
+            
+            const product400Desc = document.getElementById('product400Desc');
+            if (product400Desc) product400Desc.innerHTML = t('mega_pack');
+            
+            const product1000Desc = document.getElementById('product1000Desc');
+            if (product1000Desc) product1000Desc.innerHTML = t('legendary_pack');
+            
+            // Özel paketler
+            const specialPackagesTitle = document.getElementById('specialPackagesTitle');
+            if (specialPackagesTitle) specialPackagesTitle.innerHTML = t('packages');
+            
+            const starterPackName = document.getElementById('starterPackName');
+            if (starterPackName) starterPackName.innerHTML = t('starter_pack');
+            
+            const hunterPackName = document.getElementById('hunterPackName');
+            if (hunterPackName) hunterPackName.innerHTML = t('hunter_pack');
+            
+            const masterPackName = document.getElementById('masterPackName');
+            if (masterPackName) masterPackName.innerHTML = t('master_pack');
+            
+            const limitedLabel = document.getElementById('limitedLabel');
+            if (limitedLabel) limitedLabel.innerHTML = t('limited');
+            
+            const starterPackDesc = document.getElementById('starterPackDesc');
+            if (starterPackDesc) starterPackDesc.innerHTML = "30 " + t('coins') + " + 3 " + t('hearts');
+            
+            const hunterPackDesc = document.getElementById('hunterPackDesc');
+            if (hunterPackDesc) hunterPackDesc.innerHTML = "75 " + t('coins') + " + 5 " + t('hearts');
+            
+            const masterPackDesc = document.getElementById('masterPackDesc');
+            if (masterPackDesc) masterPackDesc.innerHTML = "200 " + t('coins') + " + 10 " + t('hearts');
+            
+            // Kalp paketleri
+            const heartPackagesTitle = document.getElementById('heartPackagesTitle');
+            if (heartPackagesTitle) heartPackagesTitle.innerHTML = t('hearts_packages');
+            
+            const maxHeartWarning = document.getElementById('maxHeartWarning');
+            if (maxHeartWarning) maxHeartWarning.innerHTML = "⚠️ " + t('max_heart_warning');
+            
+            const heart1Name = document.getElementById('heart1Name');
+            if (heart1Name) heart1Name.innerHTML = "1 " + t('hearts');
+            
+            const heart3Name = document.getElementById('heart3Name');
+            if (heart3Name) heart3Name.innerHTML = "3 " + t('hearts');
+            
+            const heart5Name = document.getElementById('heart5Name');
+            if (heart5Name) heart5Name.innerHTML = "5 " + t('hearts');
+            
+            const maximumLabel = document.getElementById('maximumLabel');
+            if (maximumLabel) maximumLabel.innerHTML = t('best');
+            
+            const heart1Desc = document.getElementById('heart1Desc');
+            if (heart1Desc) heart1Desc.innerHTML = t('product_1_heart');
+            
+            const heart3Desc = document.getElementById('heart3Desc');
+            if (heart3Desc) heart3Desc.innerHTML = t('product_3_hearts');
+            
+            const heart5Desc = document.getElementById('heart5Desc');
+            if (heart5Desc) heart5Desc.innerHTML = t('product_5_hearts');
+            
+            // VIP
+            const vipMembershipTitle = document.getElementById('vipMembershipTitle');
+            if (vipMembershipTitle) vipMembershipTitle.innerHTML = t('vip_membership');
+            
+            const vipJoinTitle = document.getElementById('vipJoinTitle');
+            if (vipJoinTitle) vipJoinTitle.innerHTML = t('vip_join');
+            
+            const vipDailyGift = document.getElementById('vipDailyGift');
+            if (vipDailyGift) vipDailyGift.innerHTML = t('vip_daily_gift');
+            
+            const vipCoinBonus = document.getElementById('vipCoinBonus');
+            if (vipCoinBonus) vipCoinBonus.innerHTML = t('vip_coin_bonus');
+            
+            const vipWeeklyIce = document.getElementById('vipWeeklyIce');
+            if (vipWeeklyIce) vipWeeklyIce.innerHTML = t('vip_weekly_ice');
+            
+            const vipWeeklyHeart = document.getElementById('vipWeeklyHeart');
+            if (vipWeeklyHeart) vipWeeklyHeart.innerHTML = t('vip_weekly_heart');
+            
+            const vipBadge = document.getElementById('vipBadge');
+            if (vipBadge) vipBadge.innerHTML = t('vip_badge');
+            
+            const monthLabel = document.getElementById('monthLabel');
+            if (monthLabel) monthLabel.innerHTML = t('monthly');
+            
+            const vipJoinBtn = document.getElementById('vipJoinBtn');
+            if (vipJoinBtn) vipJoinBtn.innerHTML = t('vip_join');
+            
+            const vip3MonthsName = document.getElementById('vip3MonthsName');
+            if (vip3MonthsName) vip3MonthsName.innerHTML = t('vip_3months');
+            
+            const vip6MonthsName = document.getElementById('vip6MonthsName');
+            if (vip6MonthsName) vip6MonthsName.innerHTML = t('vip_6months');
+            
+            const save20Label = document.getElementById('save20Label');
+            if (save20Label) save20Label.innerHTML = t('vip_save_20');
+            
+            const save30Label = document.getElementById('save30Label');
+            if (save30Label) save30Label.innerHTML = t('vip_save_30');
+            
+            const limitedStockLabel = document.getElementById('limitedStockLabel');
+            if (limitedStockLabel) limitedStockLabel.innerHTML = t('limited');
+            
+            const bestValueLabel = document.getElementById('bestValueLabel');
+            if (bestValueLabel) bestValueLabel.innerHTML = t('best');
+            
+            const vip3MonthsDesc = document.getElementById('vip3MonthsDesc');
+            if (vip3MonthsDesc) vip3MonthsDesc.innerHTML = "3 " + t('monthly') + " + 100 " + t('coins');
+            
+            const vip6MonthsDesc = document.getElementById('vip6MonthsDesc');
+            if (vip6MonthsDesc) vip6MonthsDesc.innerHTML = "6 " + t('monthly') + " + 250 " + t('coins');
+            
+            // Kendin belirle
+            const customAmountTitle = document.getElementById('customAmountTitle');
+            if (customAmountTitle) customAmountTitle.innerHTML = t('custom_amount');
+            
+            const coinsUnitLabel = document.getElementById('coinsUnitLabel');
+            if (coinsUnitLabel) coinsUnitLabel.innerHTML = t('coins');
+            
+            const coinsUnitLabel2 = document.getElementById('coinsUnitLabel2');
+            if (coinsUnitLabel2) coinsUnitLabel2.innerHTML = t('coins');
+            
+            const heartsUnitLabel = document.getElementById('heartsUnitLabel');
+            if (heartsUnitLabel) heartsUnitLabel.innerHTML = t('hearts') + " (Max 5)";
+            
+            const totalAmountLabel = document.getElementById('totalAmountLabel');
+            if (totalAmountLabel) totalAmountLabel.innerHTML = t('price');
+            
+            const totalAmountLabel2 = document.getElementById('totalAmountLabel2');
+            if (totalAmountLabel2) totalAmountLabel2.innerHTML = t('price');
+            
+            const buyNowCustomBtn = document.getElementById('buyNowCustomBtn');
+            if (buyNowCustomBtn) buyNowCustomBtn.innerHTML = t('buy');
+            
+            const buyNowPackageBtn = document.getElementById('buyNowPackageBtn');
+            if (buyNowPackageBtn) buyNowPackageBtn.innerHTML = t('buy');
+            
+            // Ödeme modalı
+            const selectPaymentTitle = document.getElementById('selectPaymentTitle');
+            if (selectPaymentTitle) selectPaymentTitle.innerHTML = t('payment_start');
+            
+            const creditCardLabel = document.getElementById('creditCardLabel');
+            if (creditCardLabel) creditCardLabel.innerHTML = t('buy');
+            
+            const googlePlayLabel = document.getElementById('googlePlayLabel');
+            if (googlePlayLabel) googlePlayLabel.innerHTML = t('buy');
+            
+            const cancelPaymentLabel = document.getElementById('cancelPaymentLabel');
+            if (cancelPaymentLabel) cancelPaymentLabel.innerHTML = t('cancel');
+            
+            // Tüm Satın Al butonları
+            const buyBtns = document.querySelectorAll('.buy-btn, .custom-buy-btn');
+            buyBtns.forEach(btn => {
+                const txt = btn.innerHTML;
+                if (txt === 'Satın Al' || txt === 'Buy' || txt === 'Al' || txt === 'Buy Now' || txt === 'Satın Al') {
+                    btn.innerHTML = t('buy');
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', applyLanguageToMarket);
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fruit Combine - Market</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .market-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 800px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+
+        .market-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: white;
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.5);
+            padding: 12px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+
+        .market-header h1 {
+            font-size: 22px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 15px;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+
+        .coin-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+
+        .coin-img-sm {
+            width: 20px;
+            height: 20px;
+        }
+
+        .coin-img-lg {
+            width: 45px;
+            height: 45px;
+        }
+
+        .coin-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 5px 12px;
+            border-radius: 40px;
+            box-shadow: 0 3px 0 #B8860B;
+        }
+
+        .coin-amount {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .market-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            border-radius: 15px;
+            flex-wrap: nowrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 8px 2px;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+        }
+
+        .tab-btn span:first-child {
+            font-size: 22px;
+        }
+
+        .tab-btn span:last-child {
+            font-size: 11px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            box-shadow: 0 3px 0 #C94F4F;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 12px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .section-title span {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+        }
+
+        .sale-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(45deg, #FF4444, #FF6B6B);
+            color: white;
+            font-size: 9px;
+            font-weight: bold;
+            padding: 2px 6px;
+            border-radius: 15px;
+            transform: rotate(5deg);
+        }
+
+        .shop-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shop-item:hover {
+            transform: scale(1.01);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .item-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .item-icon.heart {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #ff3b3b);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .item-icon.heart span {
+            font-size: 28px;
+        }
+
+        .item-icon.package {
+            background: radial-gradient(circle at 30% 30%, #4CAF50, #45a049);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .item-icon.package span {
+            font-size: 28px;
+        }
+
+        .item-icon.vip {
+            background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+        }
+
+        .item-icon.vip span {
+            font-size: 28px;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            color: white;
+            font-weight: bold;
+            font-size: 15px;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .item-desc {
+            color: rgba(255,255,255,0.65);
+            font-size: 11px;
+        }
+
+        .item-price {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .old-price {
+            color: #ff8888;
+            font-size: 11px;
+            text-decoration: line-through;
+            margin-right: 5px;
+        }
+
+        .bonus-badge {
+            background: #FFD700;
+            color: #333;
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .limited-badge {
+            background: #FF4444;
+            color: white;
+            font-size: 8px;
+            padding: 2px 5px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .buy-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #2d6a2d;
+            transition: all 0.1s;
+            font-size: 13px;
+        }
+
+        .buy-btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+        .buy-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .custom-section {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border: 2px solid #FFD700;
+        }
+
+        .custom-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .custom-input-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .custom-input-row input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
+            width: 100px;
+        }
+
+        .custom-input-row input:focus {
+            outline: none;
+        }
+
+        .price-display {
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .price-display .label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .price-display .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .custom-buy-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #2d6a2d;
+            margin-top: 10px;
+        }
+
+        .custom-buy-btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+
+        .vip-card {
+            background: linear-gradient(135deg, #FFD70020, #FFA50020);
+            border: 2px solid #FFD700;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .vip-card h3 {
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .vip-benefits {
+            display: flex;
+            justify-content: space-around;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
+
+        .vip-benefit {
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .vip-benefit .icon {
+            font-size: 20px;
+        }
+
+        .vip-benefit .text {
+            font-size: 9px;
+            color: white;
+        }
+
+        .heart-warning {
+            background: rgba(255,193,7,0.2);
+            border: 1px solid #FFC107;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 12px;
+            color: #FFC107;
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .payment-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .payment-modal.active {
+            display: flex;
+        }
+
+        .payment-card {
+            width: 90%;
+            max-width: 340px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 25px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+        }
+
+        .payment-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .payment-amount {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+
+        .payment-option {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .payment-option:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .close-modal {
+            margin-top: 15px;
+            padding: 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .toast-message {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 1001;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-size: 14px;
+        }
+
+        .toast-message.error {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .market-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .market-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .market-container::-webkit-scrollbar-thumb {
+            background: #FFD700;
+            border-radius: 10px;
+        }
+
+        [dir="rtl"] .market-container {
+            direction: rtl;
+        }
+
+        [dir="rtl"] .market-header {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .back-btn {
+            transform: scaleX(-1);
+        }
+
+        [dir="rtl"] .shop-item {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .item-price {
+            margin-left: 10px;
+            margin-right: 0;
+        }
+
+        [dir="rtl"] .market-tabs {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .sale-badge {
+            right: auto;
+            left: -8px;
+        }
+
+        [dir="rtl"] .custom-input-row {
+            flex-direction: row-reverse;
+        }
+
+        [dir="rtl"] .vip-benefits {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="market-container">
+        <div class="market-header">
+            <button class="back-btn" onclick="window.location.href='game.html'">← <span id="backText">Geri</span></button>
+            <h1 id="marketTitle">MARKET</h1>
+            <div class="coin-display">
+                <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img">
+                <span class="coin-amount" id="coinAmount">50</span>
+            </div>
+        </div>
+
+        <!-- 5 BUTON -->
+        <div class="market-tabs">
+            <button class="tab-btn active" onclick="showTab('coins', event)">
+                <span>💰</span>
+                <span id="coinsTabLabel">Jeton</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('packages', event)">
+                <span>🎁</span>
+                <span id="packagesTabLabel">Paket</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('hearts', event)">
+                <span>❤️</span>
+                <span id="heartsTabLabel">Kalp</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('vip', event)">
+                <span>👑</span>
+                <span id="vipTabLabel">VIP</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('custom', event)">
+                <span>✏️</span>
+                <span id="customTabLabel">Kendi</span>
+            </button>
+        </div>
+
+        <!-- JETONLAR -->
+        <div id="coinsTab" class="tab-content active">
+            <div class="section-title">
+                <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" style="width: 28px; height: 28px;">
+                <span id="coinPackagesTitle">Jeton Paketleri</span>
+            </div>
+
+            <div class="shop-item special-offer">
+                <div class="item-icon"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-lg"></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="product50Name">50 Jeton</span> <span class="bonus-badge" id="popularLabel">POPÜLER</span></div>
+                    <div class="item-desc" id="product50Desc">Başlangıç paketi</div>
+                </div>
+                <div class="item-price"><span class="old-price">$2.49</span> $1.99</div>
+                <button class="buy-btn" onclick="processPurchase('coins_50', 1.99, 50, 0)">Satın Al</button>
+                <div class="sale-badge">-20%</div>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-lg"></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="product150Name">150 Jeton</span> <span class="bonus-badge" id="bonus20Label">+20 BONUS</span></div>
+                    <div class="item-desc" id="product150Desc">Popüler paket</div>
+                </div>
+                <div class="item-price">$4.99</div>
+                <button class="buy-btn" onclick="processPurchase('coins_150', 4.99, 170, 0)">Satın Al</button>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-lg"></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="product400Name">400 Jeton</span> <span class="bonus-badge" id="bonus50Label">+50 BONUS</span></div>
+                    <div class="item-desc" id="product400Desc">Dev paket</div>
+                </div>
+                <div class="item-price">$9.99</div>
+                <button class="buy-btn" onclick="processPurchase('coins_400', 9.99, 450, 0)">Satın Al</button>
+            </div>
+
+            <div class="shop-item special-offer">
+                <div class="item-icon"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-lg"></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="product1000Name">1000 Jeton</span> <span class="bonus-badge" id="bonus200Label">+200 BONUS</span></div>
+                    <div class="item-desc" id="product1000Desc">Efsane paket</div>
+                </div>
+                <div class="item-price"><span class="old-price">$24.99</span> $19.99</div>
+                <button class="buy-btn" onclick="processPurchase('coins_1000', 19.99, 1200, 0)">Satın Al</button>
+                <div class="sale-badge" id="bestLabel">EN İYİ</div>
+            </div>
+        </div>
+
+        <!-- PAKETLER -->
+        <div id="packagesTab" class="tab-content">
+            <div class="section-title">
+                🎁 <span id="specialPackagesTitle">Özel Paketler</span>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon package"><span>🎁</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="starterPackName">Başlangıç Paketi</span></div>
+                    <div class="item-desc" id="starterPackDesc">30 Jeton + 3 Kalp</div>
+                </div>
+                <div class="item-price">$2.99</div>
+                <button class="buy-btn" onclick="processPurchase('package_starter', 2.99, 30, 3)">Satın Al</button>
+            </div>
+
+            <div class="shop-item special-offer">
+                <div class="item-icon package"><span>🎁</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="hunterPackName">Avcı Paketi</span> <span class="limited-badge" id="limitedLabel">LİMİTLİ</span></div>
+                    <div class="item-desc" id="hunterPackDesc">75 Jeton + 5 Kalp</div>
+                </div>
+                <div class="item-price"><span class="old-price">$6.99</span> $4.99</div>
+                <button class="buy-btn" onclick="processPurchase('package_hunter', 4.99, 75, 5)">Satın Al</button>
+                <div class="sale-badge">-30%</div>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon package"><span>🎁</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="masterPackName">Usta Paketi</span></div>
+                    <div class="item-desc" id="masterPackDesc">200 Jeton + 10 Kalp</div>
+                </div>
+                <div class="item-price">$9.99</div>
+                <button class="buy-btn" onclick="processPurchase('package_master', 9.99, 200, 10)">Satın Al</button>
+            </div>
+        </div>
+
+        <!-- KALPLER -->
+        <div id="heartsTab" class="tab-content">
+            <div class="section-title">
+                ❤️ <span id="heartPackagesTitle">Kalp Paketleri</span>
+            </div>
+
+            <div class="heart-warning" id="maxHeartWarning">
+                ⚠️ Maksimum kalp sayısı 5'dir
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon heart"><span>❤️</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="heart1Name">1 Kalp</span></div>
+                    <div class="item-desc" id="heart1Desc">Hemen oyuna dön</div>
+                </div>
+                <div class="item-price">$0.99</div>
+                <button class="buy-btn" onclick="processPurchase('heart_1', 0.99, 0, 1)">Satın Al</button>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon heart"><span>❤️</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="heart3Name">3 Kalp</span></div>
+                    <div class="item-desc" id="heart3Desc">Küçük kalp paketi</div>
+                </div>
+                <div class="item-price">$2.49</div>
+                <button class="buy-btn" onclick="processPurchase('heart_3', 2.49, 0, 3)">Satın Al</button>
+            </div>
+
+            <div class="shop-item special-offer">
+                <div class="item-icon heart"><span>❤️</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="heart5Name">5 Kalp</span> <span class="bonus-badge" id="maximumLabel">MAKSİMUM</span></div>
+                    <div class="item-desc" id="heart5Desc">Büyük kalp paketi</div>
+                </div>
+                <div class="item-price"><span class="old-price">$4.99</span> $3.99</div>
+                <button class="buy-btn" onclick="processPurchase('heart_5', 3.99, 0, 5)">Satın Al</button>
+                <div class="sale-badge">-20%</div>
+            </div>
+        </div>
+
+        <!-- VIP -->
+        <div id="vipTab" class="tab-content">
+            <div class="section-title">
+                👑 <span id="vipMembershipTitle">VIP ÜYELİK</span>
+            </div>
+
+            <div class="vip-card">
+                <h3 id="vipJoinTitle">👑 VIP ÜYE OL</h3>
+                <div class="vip-benefits">
+                    <div class="vip-benefit"><div class="icon">🎁</div><div class="text" id="vipDailyGift">Günlük Hediyeler</div></div>
+                    <div class="vip-benefit"><div class="icon">💰</div><div class="text" id="vipCoinBonus">%20 Jeton</div></div>
+                    <div class="vip-benefit"><div class="icon">❄️</div><div class="text" id="vipWeeklyIce">1 Buz/Hafta</div></div>
+                    <div class="vip-benefit"><div class="icon">❤️</div><div class="text" id="vipWeeklyHeart">1 Kalp/Hafta</div></div>
+                    <div class="vip-benefit"><div class="icon">🏆</div><div class="text" id="vipBadge">Özel Rozet</div></div>
+                </div>
+                <div class="item-price" style="font-size: 22px; margin: 12px 0;">$2.99 / <span id="monthLabel">Ay</span></div>
+                <button class="buy-btn" onclick="processPurchase('vip_monthly', 2.99, 0, 0)" style="background: linear-gradient(45deg, #FFD700, #FFA500); color: #333; padding: 10px 20px; font-size: 14px;" id="vipJoinBtn">VIP ÜYE OL</button>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon vip"><span>👑</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="vip3MonthsName">3 Aylık VIP</span> <span class="bonus-badge" id="save20Label">%20 TASARRUF</span></div>
+                    <div class="item-desc" id="vip3MonthsDesc">3 ay + 100 Jeton</div>
+                </div>
+                <div class="item-price"><span class="old-price">$8.97</span> $9.99</div>
+                <button class="buy-btn" onclick="processPurchase('vip_3months', 9.99, 100, 0)">Satın Al</button>
+                <div class="sale-badge" id="limitedStockLabel">SINIRLI</div>
+            </div>
+
+            <div class="shop-item">
+                <div class="item-icon vip"><span>👑</span></div>
+                <div class="item-info">
+                    <div class="item-name"><span id="vip6MonthsName">6 Aylık VIP</span> <span class="bonus-badge" id="save30Label">%30 TASARRUF</span></div>
+                    <div class="item-desc" id="vip6MonthsDesc">6 ay + 250 Jeton</div>
+                </div>
+                <div class="item-price"><span class="old-price">$17.94</span> $19.99</div>
+                <button class="buy-btn" onclick="processPurchase('vip_6months', 19.99, 250, 0)">Satın Al</button>
+                <div class="sale-badge" id="bestValueLabel">EN İYİ</div>
+            </div>
+        </div>
+
+        <!-- KENDİN BELİRLE -->
+        <div id="customTab" class="tab-content">
+            <div class="section-title">
+                ✏️ <span id="customAmountTitle">Kendin Belirle</span>
+            </div>
+
+            <div class="custom-section">
+                <div class="custom-input-group">
+                    <div class="custom-input-row">
+                        <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img">
+                        <input type="number" id="customCoins" value="100" min="10" max="10000" step="10" oninput="calculateCustomPrice()">
+                        <span id="coinsUnitLabel">Jeton</span>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <div class="label" id="totalAmountLabel">Toplam Tutar:</div>
+                    <div class="amount" id="customPrice">$1.99</div>
+                    <div class="label" id="priceHintLabel">50J=$1.99 | 150J=$4.99 | 400J=$9.99 | 1000J=$19.99</div>
+                </div>
+
+                <button class="custom-buy-btn" onclick="buyCustomCoins()" id="buyNowCustomBtn">Satın Al</button>
+            </div>
+
+            <div class="custom-section">
+                <div class="custom-input-group">
+                    <div class="custom-input-row">
+                        <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img">
+                        <input type="number" id="customPackageCoins" value="50" min="0" max="10000" step="10" oninput="calculateCustomPackagePrice()">
+                        <span id="coinsUnitLabel2">Jeton</span>
+                    </div>
+                    <div class="custom-input-row">
+                        <div class="item-icon heart" style="width:40px; height:40px;"><span>❤️</span></div>
+                        <input type="number" id="customPackageHearts" value="1" min="0" max="5" step="1" oninput="calculateCustomPackagePrice()">
+                        <span id="heartsUnitLabel">Kalp (Max 5)</span>
+                    </div>
+                </div>
+
+                <div class="price-display">
+                    <div class="label" id="totalAmountLabel2">Toplam Tutar:</div>
+                    <div class="amount" id="customPackagePrice">$2.49</div>
+                    <div class="label" id="packageHintLabel">30J+3K=$2.99 | 75J+5K=$4.99 | 200J+10K=$9.99</div>
+                </div>
+
+                <button class="custom-buy-btn" onclick="buyCustomPackage()" id="buyNowPackageBtn">Satın Al</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="payment-modal" id="paymentModal">
+        <div class="payment-card">
+            <h3 id="selectPaymentTitle">Ödeme Yöntemi Seçin</h3>
+            <div class="payment-amount" id="paymentAmount">$1.99</div>
+            <div class="payment-option" onclick="completePayment('card')">
+                <span>💳 <span id="creditCardLabel">Kredi Kartı</span></span>
+                <span>Ödeme Yap →</span>
+            </div>
+            <div class="payment-option" onclick="completePayment('googleplay')">
+                <span>📱 <span id="googlePlayLabel">Google Play</span></span>
+                <span>Ödeme Yap →</span>
+            </div>
+            <div class="close-modal" onclick="closePaymentModal()" id="cancelPaymentLabel">
+                İptal
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let pendingPurchase = null;
+        
+        // Ürün satın alma işlemini başlat
+        function processPurchase(productId, price, coins, hearts) {
+            // Kalp kontrolü
+            if (hearts > 0) {
+                let currentHearts = parseInt(localStorage.getItem('hearts') || '5');
+                let newHearts = currentHearts + hearts;
+                if (currentHearts >= 5) {
+                    showToast('Zaten maksimum kalp sayısına sahipsiniz! (5/5)', 'error');
+                    return;
+                }
+                if (newHearts > 5) {
+                    showToast('En fazla 5 kalp sahibi olabilirsiniz!', 'error');
+                    return;
+                }
+            }
+            
+            pendingPurchase = { productId, price, coins, hearts };
+            document.getElementById('paymentAmount').textContent = `$${price.toFixed(2)}`;
+            document.getElementById('paymentModal').classList.add('active');
+        }
+        
+        // Ödemeyi tamamla
+        function completePayment(method) {
+            if (!pendingPurchase) return;
+            
+            closePaymentModal();
+            showToast('Ödeme başlatılıyor...');
+            
+            setTimeout(() => {
+                // Jeton ekle
+                if (pendingPurchase.coins > 0) {
+                    let currentCoins = parseInt(localStorage.getItem('coins') || '50');
+                    currentCoins += pendingPurchase.coins;
+                    localStorage.setItem('coins', currentCoins);
+                    document.getElementById('coinAmount').textContent = currentCoins;
+                }
+                
+                // Kalp ekle
+                if (pendingPurchase.hearts > 0) {
+                    let currentHearts = parseInt(localStorage.getItem('hearts') || '5');
+                    let newHearts = currentHearts + pendingPurchase.hearts;
+                    if (newHearts > 5) newHearts = 5;
+                    localStorage.setItem('hearts', newHearts);
+                }
+                
+                // VIP kaydet
+                if (pendingPurchase.productId === 'vip_monthly') {
+                    localStorage.setItem('vipActive', 'true');
+                    localStorage.setItem('vipExpiry', Date.now() + (30 * 24 * 60 * 60 * 1000));
+                    localStorage.setItem('vipMonths', 1);
+                } else if (pendingPurchase.productId === 'vip_3months') {
+                    localStorage.setItem('vipActive', 'true');
+                    localStorage.setItem('vipExpiry', Date.now() + (90 * 24 * 60 * 60 * 1000));
+                    localStorage.setItem('vipMonths', 3);
+                } else if (pendingPurchase.productId === 'vip_6months') {
+                    localStorage.setItem('vipActive', 'true');
+                    localStorage.setItem('vipExpiry', Date.now() + (180 * 24 * 60 * 60 * 1000));
+                    localStorage.setItem('vipMonths', 6);
+                }
+                
+                showToast('Satın alma başarılı! Teşekkürler! 🎉');
+                pendingPurchase = null;
+                
+                // Kalp butonlarını güncelle
+                updateHeartButtons();
+            }, 1500);
+        }
+        
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            pendingPurchase = null;
+        }
+        
+        function updateHeartButtons() {
+            const currentHearts = parseInt(localStorage.getItem('hearts') || '5');
+            const maxHearts = 5;
+            const btns = document.querySelectorAll('#heartsTab .buy-btn');
+            btns.forEach(btn => {
+                if (currentHearts >= maxHearts) {
+                    btn.classList.add('disabled');
+                } else {
+                    btn.classList.remove('disabled');
+                }
+            });
+        }
+        
+        function updateCoinDisplay() {
+            const coins = localStorage.getItem('coins') || '50';
+            document.getElementById('coinAmount').textContent = coins;
+        }
+        
+        function showTab(tabName, event) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            if (event && event.target) {
+                const btn = event.target.closest('.tab-btn');
+                if (btn) btn.classList.add('active');
+            }
+            const tabElement = document.getElementById(tabName + 'Tab');
+            if (tabElement) tabElement.classList.add('active');
+        }
+        
+        function getCoinPrice(coins) {
+            if (coins <= 50) return 1.99;
+            if (coins <= 170) return 4.99;
+            if (coins <= 450) return 9.99;
+            return 19.99 + Math.floor((coins - 1200) / 100) * 1.5;
+        }
+        
+        function getPackagePrice(coins, hearts) {
+            if (coins <= 30 && hearts <= 3) return 2.99;
+            if (coins <= 75 && hearts <= 5) return 4.99;
+            if (coins <= 200 && hearts <= 10) return 9.99;
+            return getCoinPrice(coins) + hearts * 0.99;
+        }
+        
+        function calculateCustomPrice() {
+            const coins = parseInt(document.getElementById('customCoins').value) || 0;
+            document.getElementById('customPrice').textContent = `$${getCoinPrice(coins).toFixed(2)}`;
+        }
+        
+        function calculateCustomPackagePrice() {
+            const coins = parseInt(document.getElementById('customPackageCoins').value) || 0;
+            const hearts = parseInt(document.getElementById('customPackageHearts').value) || 0;
+            document.getElementById('customPackagePrice').textContent = `$${getPackagePrice(coins, hearts).toFixed(2)}`;
+        }
+        
+        function buyCustomCoins() {
+            const amount = parseInt(document.getElementById('customCoins').value);
+            if (amount < 10) { showToast('Minimum 10 jeton alabilirsiniz!', 'error'); return; }
+            if (amount > 10000) { showToast('Maksimum 10000 jeton alabilirsiniz!', 'error'); return; }
+            let totalCoins = amount;
+            if (amount >= 1000) totalCoins = amount + 200;
+            else if (amount >= 400) totalCoins = amount + 50;
+            else if (amount >= 150) totalCoins = amount + 20;
+            processPurchase('custom_coins', getCoinPrice(amount), totalCoins, 0);
+        }
+        
+        function buyCustomPackage() {
+            let coins = parseInt(document.getElementById('customPackageCoins').value) || 0;
+            let hearts = parseInt(document.getElementById('customPackageHearts').value) || 0;
+            const currentHearts = parseInt(localStorage.getItem('hearts') || '5');
+            if (currentHearts + hearts > 5) {
+                hearts = 5 - currentHearts;
+                if (hearts <= 0) { showToast('En fazla 5 kalp sahibi olabilirsiniz!', 'error'); return; }
+                showToast(`${hearts} kalp eklenebilir.`);
+            }
+            let totalCoins = coins;
+            if (coins >= 1000) totalCoins = coins + 200;
+            else if (coins >= 400) totalCoins = coins + 50;
+            else if (coins >= 150) totalCoins = coins + 20;
+            processPurchase('custom_package', getPackagePrice(coins, hearts), totalCoins, hearts);
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-message ${type === 'error' ? 'error' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCoinDisplay();
+            updateHeartButtons();
+            calculateCustomPrice();
+            calculateCustomPackagePrice();
+            
+            const currentLang = localStorage.getItem('language') || 'tr';
+            if (currentLang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            }
+        });
+        
+        // Global fonksiyonlar
+        window.showTab = showTab;
+        window.processPurchase = processPurchase;
+        window.completePayment = completePayment;
+        window.closePaymentModal = closePaymentModal;
+        window.buyCustomCoins = buyCustomCoins;
+        window.buyCustomPackage = buyCustomPackage;
+        window.calculateCustomPrice = calculateCustomPrice;
+        window.calculateCustomPackagePrice = calculateCustomPackagePrice;
+    </script>
+</body>
+</html>

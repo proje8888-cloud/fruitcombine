@@ -1,0 +1,2299 @@
+<!DOCTYPE html>
+<html lang="tr" id="mainHtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fruit Combine - Oyun</title>
+    
+    <!-- DİL SİSTEMİ -->
+    <script src="js/translations.js"></script>
+    <script>
+        // Sayfa yüklendiğinde dili uygula
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentLangCode = localStorage.getItem('language') || getSystemLanguage();
+            if (currentLangCode === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+            updateAllGameTexts();
+        });
+        
+        function updateAllGameTexts() {
+            const levelNum = document.getElementById('levelNumber');
+            if (levelNum && typeof gameState !== 'undefined') {
+                levelNum.innerHTML = `${t('level')} ${gameState.currentLevel}`;
+            } else if (levelNum) {
+                levelNum.innerHTML = `${t('level')} 1`;
+            }
+            const targetTitle = document.getElementById('targetTitle');
+            if (targetTitle) targetTitle.innerHTML = t('target');
+            const movesLabel = document.getElementById('movesLabel');
+            if (movesLabel) {
+                const movesCount = document.getElementById('movesCount');
+                movesLabel.innerHTML = `${t('moves')}: <span id="movesCount">${movesCount ? movesCount.textContent : '0'}</span>`;
+            }
+            const scoreLabel = document.getElementById('scoreLabel');
+            if (scoreLabel) {
+                const scoreDisplay = document.getElementById('scoreDisplay');
+                scoreLabel.innerHTML = `⭐ <span id="scoreDisplay">${scoreDisplay ? scoreDisplay.textContent : '0'}</span>`;
+            }
+            const iceLabel = document.getElementById('iceLabel');
+            if (iceLabel) iceLabel.innerHTML = t('ice');
+            const moveLabel = document.getElementById('moveLabel');
+            if (moveLabel) moveLabel.innerHTML = t('extra_move');
+            const timeLabel = document.getElementById('timeLabel');
+            if (timeLabel) timeLabel.innerHTML = t('extra_time');
+            const failedTitle = document.getElementById('failedTitle');
+            if (failedTitle) failedTitle.innerHTML = t('level_failed');
+            const remainingTitle = document.getElementById('remainingTitle');
+            if (remainingTitle) remainingTitle.innerHTML = t('remaining_targets');
+            const replayFailedBtn = document.getElementById('replayFailedBtn');
+            if (replayFailedBtn) replayFailedBtn.innerHTML = `🔄 ${t('replay')}`;
+            const skipLevelBtn = document.getElementById('skipLevelBtn');
+            if (skipLevelBtn) {
+                skipLevelBtn.innerHTML = `⏩ ${t('skip_level')} <span><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" style="width:14px;height:14px;"> 8</span>`;
+            }
+            const showLevelsBtn = document.getElementById('showLevelsBtn');
+            if (showLevelsBtn) showLevelsBtn.innerHTML = `📋 ${t('show_levels')}`;
+            const completeTitle = document.getElementById('completeTitle');
+            if (completeTitle) completeTitle.innerHTML = t('level_complete');
+            const nextTargetsTitle = document.getElementById('nextTargetsTitle');
+            if (nextTargetsTitle) nextTargetsTitle.innerHTML = t('next_level_targets');
+            const replayCompleteBtn = document.getElementById('replayCompleteBtn');
+            if (replayCompleteBtn) replayCompleteBtn.innerHTML = `🔄 ${t('replay')}`;
+            const nextLevelBtn = document.getElementById('nextLevelBtn');
+            if (nextLevelBtn) nextLevelBtn.innerHTML = `➡️ ${t('next_level')}`;
+            const dailyTitle = document.getElementById('dailyTitle');
+            if (dailyTitle) dailyTitle.innerHTML = t('daily_reward');
+            const todaysRewardLabel = document.getElementById('todaysRewardLabel');
+            if (todaysRewardLabel) todaysRewardLabel.innerHTML = t('todays_reward');
+            const claimBtn = document.getElementById('claimBtn');
+            if (claimBtn) claimBtn.innerHTML = t('claim');
+            const remindBtn = document.getElementById('remindBtn');
+            if (remindBtn) remindBtn.innerHTML = t('later');
+            const statsTitle = document.getElementById('statsTitle');
+            if (statsTitle) statsTitle.innerHTML = t('statistics');
+            const statLevelsLabel = document.getElementById('statLevelsLabel');
+            if (statLevelsLabel) statLevelsLabel.innerHTML = t('stat_levels');
+            const statFruitsLabel = document.getElementById('statFruitsLabel');
+            if (statFruitsLabel) statFruitsLabel.innerHTML = t('stat_fruits');
+            const statStarsLabel = document.getElementById('statStarsLabel');
+            if (statStarsLabel) statStarsLabel.innerHTML = t('stat_stars');
+            const statBombsLabel = document.getElementById('statBombsLabel');
+            if (statBombsLabel) statBombsLabel.innerHTML = t('stat_bombs');
+            const statIceLabel = document.getElementById('statIceLabel');
+            if (statIceLabel) statIceLabel.innerHTML = t('stat_ice');
+            const statStreakLabel = document.getElementById('statStreakLabel');
+            if (statStreakLabel) statStreakLabel.innerHTML = t('stat_streak');
+            const statPerfectLabel = document.getElementById('statPerfectLabel');
+            if (statPerfectLabel) statPerfectLabel.innerHTML = t('stat_perfect');
+            const statTimeLabel = document.getElementById('statTimeLabel');
+            if (statTimeLabel) statTimeLabel.innerHTML = t('stat_time');
+            const closeStatsBtn = document.getElementById('closeStatsBtn');
+            if (closeStatsBtn) closeStatsBtn.innerHTML = t('close');
+            const inviteTitle = document.getElementById('inviteTitle');
+            if (inviteTitle) inviteTitle.innerHTML = t('invite_friend');
+            const inviteLinkLabel = document.getElementById('inviteLinkLabel');
+            if (inviteLinkLabel) inviteLinkLabel.innerHTML = t('invite_link');
+            const copyBtn = document.getElementById('copyBtn');
+            if (copyBtn) copyBtn.innerHTML = t('copy');
+            const inviteCountLabel = document.getElementById('inviteCountLabel');
+            if (inviteCountLabel) inviteCountLabel.innerHTML = t('invite_count');
+            const inviteEarnedLabel = document.getElementById('inviteEarnedLabel');
+            if (inviteEarnedLabel) inviteEarnedLabel.innerHTML = t('invite_earned');
+            const heartWarningTitle = document.getElementById('heartWarningTitle');
+            if (heartWarningTitle) heartWarningTitle.innerHTML = t('no_heart');
+            const heartWarningText = document.getElementById('heartWarningText');
+            if (heartWarningText) heartWarningText.innerHTML = t('no_heart_text');
+            const heartWarningOk = document.getElementById('heartWarningOk');
+            if (heartWarningOk) heartWarningOk.innerHTML = t('close');
+            const heartWarningMarket = document.getElementById('heartWarningMarket');
+            if (heartWarningMarket) heartWarningMarket.innerHTML = t('market_title');
+            const infoTitle = document.getElementById('infoTitle');
+            if (infoTitle) infoTitle.innerHTML = t('how_to_play');
+            const infoText = document.getElementById('infoText');
+            if (infoText) infoText.innerHTML = t('how_to_play_text');
+            const infoDesc = document.getElementById('infoDesc');
+            if (infoDesc) infoDesc.innerHTML = t('how_to_play_desc');
+            const pauseOverlayText = document.querySelector('.pause-overlay-text');
+            if (pauseOverlayText) {
+                pauseOverlayText.innerHTML = `⏸️ ${t('game_paused')} ⏸️<br><span class="pause-overlay-sub">▶️ ${t('click_to_resume')}</span>`;
+            }
+            const rewardItems = document.querySelectorAll('.reward-item .prize');
+            if (rewardItems[0]) rewardItems[0].innerHTML = t('invite_1');
+            if (rewardItems[1]) rewardItems[1].innerHTML = t('invite_2');
+            if (rewardItems[2]) rewardItems[2].innerHTML = t('invite_3');
+            if (rewardItems[3]) rewardItems[3].innerHTML = t('invite_4');
+            if (rewardItems[4]) rewardItems[4].innerHTML = t('invite_5');
+        }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .game-wrapper {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 800px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .game-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://i.postimg.cc/YSqhBhXj/Chat-GPT-Image-1-Sub-2026-15-59-20-1.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(2px);
+            z-index: 1;
+            transition: filter 0.3s ease;
+        }
+        
+        .game-container.blur {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            margin-bottom: 8px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+        }
+        
+        .level-number {
+            font-size: 18px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 25px;
+        }
+        
+        .level-btn {
+            font-size: 16px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 12px;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        
+        .right-icons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .invite-icon, .stats-icon, .settings-icon, .pause-icon {
+            font-size: 22px;
+            cursor: pointer;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+            transition: transform 0.2s;
+        }
+        
+        .pause-icon:active {
+            transform: scale(0.9);
+        }
+        
+        .coin-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+        }
+        
+        .coin-img-sm {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-right: 2px;
+        }
+        
+        .hearts-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+        
+        .heart-circle {
+            position: relative;
+            width: 50px;
+            height: 50px;
+        }
+        
+        .heart-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .heart-circle-bg {
+            stroke: rgba(255,255,255,0.3);
+            stroke-width: 4;
+            fill: none;
+        }
+        
+        .heart-circle-progress {
+            stroke: #ff3b3b;
+            stroke-width: 4;
+            fill: none;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.3s ease;
+        }
+        
+        .heart-icon-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .heart-icon-center.animating {
+            animation: heartPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes heartPulse {
+            0% { transform: translate(-50%, -50%) scale(1); text-shadow: 0 0 0 rgba(255,59,59,0); }
+            50% { transform: translate(-50%, -50%) scale(1.3); text-shadow: 0 0 20px #ff3b3b; }
+            100% { transform: translate(-50%, -50%) scale(1); text-shadow: 0 0 0 rgba(255,59,59,0); }
+        }
+        
+        .heart-count {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+            margin-left: auto;
+        }
+        
+        .heart-timer-text {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        
+        .coin-market {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .coin-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 8px 15px;
+            border-radius: 30px;
+            box-shadow: 0 4px 0 #B8860B;
+        }
+        
+        .coin-amount {
+            font-weight: bold;
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .market-button {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            cursor: pointer;
+            box-shadow: 0 4px 0 #2d6a2d;
+            font-size: 22px;
+        }
+        
+        .target-section {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .target-title {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 5px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        
+        .target-items {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            min-height: 50px;
+        }
+        
+        .target-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+        }
+        
+        .target-item div {
+            font-size: 36px;
+        }
+        
+        .target-time {
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+        
+        .game-area {
+            flex: 1;
+            min-height: 250px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border: 2px solid rgba(255,255,255,0.2);
+            position: relative;
+        }
+        
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        .pause-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            border-radius: 15px;
+        }
+        
+        .pause-overlay-text {
+            background: rgba(0,0,0,0.8);
+            color: #FFD700;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            border: 2px solid #FFD700;
+            text-align: center;
+        }
+        
+        .pause-overlay-sub {
+            font-size: 12px;
+            margin-top: 8px;
+            color: white;
+            display: block;
+        }
+        
+        .bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .powerups {
+            display: flex;
+            justify-content: space-around;
+            gap: 5px;
+        }
+        
+        .powerup-btn {
+            flex: 1;
+            padding: 8px 5px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #4a90e2, #357abd);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            box-shadow: 0 4px 0 #1d4e7a;
+            font-size: 13px;
+            position: relative;
+        }
+        
+        .powerup-btn .price {
+            font-size: 11px;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        
+        .gift-counter {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FFD700;
+            color: #333;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid white;
+        }
+        
+        .gift-box {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 5px 10px;
+            border-radius: 20px;
+            color: #333;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 0 3px 0 #B8860B;
+            z-index: 10;
+            display: none;
+        }
+        
+        .daily-coin-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        
+        .info-modal, .level-complete-modal, .level-failed-modal, .daily-reward-modal, .stats-modal, .invite-modal, .heart-warning-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .info-modal.active, .level-complete-modal.active, .level-failed-modal.active, 
+        .daily-reward-modal.active, .stats-modal.active, .invite-modal.active, .heart-warning-modal.active {
+            display: flex;
+        }
+        
+        .info-card, .complete-card, .failed-card, .daily-reward-card, .stats-card, .invite-card, .heart-warning-card {
+            width: 90%;
+            max-width: 350px;
+            border-radius: 30px;
+            padding: 25px;
+            text-align: center;
+            animation: modalPop 0.3s ease;
+            position: relative;
+        }
+        
+        .info-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: 3px solid #FFD700; }
+        .complete-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: 3px solid #FFD700; }
+        .failed-card { background: linear-gradient(135deg, #8B0000, #5A0000); color: white; border: 3px solid #FF4444; }
+        .daily-reward-card { background: linear-gradient(135deg, #FFD700, #FFA500); color: #333; border: 4px solid white; }
+        .stats-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: 3px solid #FFD700; }
+        .invite-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: 3px solid #FFD700; }
+        .heart-warning-card { background: linear-gradient(135deg, #2c3e50, #1a1a2e); color: white; border: 2px solid rgba(255,255,255,0.2); }
+        
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .close-modal-red {
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            background: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 0 #aa0000;
+            transition: all 0.1s;
+            z-index: 10;
+        }
+        
+        .close-modal-red:active {
+            transform: scale(0.9);
+        }
+        
+        .info-icon { font-size: 70px; margin-bottom: 15px; }
+        .info-card h2 { font-size: 28px; margin-bottom: 15px; color: #FFD700; }
+        .info-highlight { background: rgba(255,215,0,0.3); border-radius: 15px; padding: 15px; margin: 15px 0; border: 2px dashed #FFD700; }
+        
+        .failed-card h2 { font-size: 28px; margin-bottom: 10px; color: #FF8888; }
+        .failed-icon { font-size: 50px; margin: 10px 0; }
+        .remaining-targets { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 15px; margin: 15px 0; }
+        .remaining-targets p { font-size: 16px; margin-bottom: 10px; color: #FFD700; }
+        .remaining-items { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .remaining-item { display: flex; flex-direction: column; align-items: center; }
+        .remaining-item div { font-size: 36px; }
+        .remaining-item span { font-size: 14px; margin-top: 5px; color: #FF8888; }
+        .failed-buttons { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+        .failed-buttons button { width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+        .replay-failed-btn { background: linear-gradient(45deg, #4a90e2, #357abd); color: white; }
+        .skip-level-btn { background: linear-gradient(45deg, #FF6B6B, #FF8E53); color: white; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .skip-level-btn span { background: #FFD700; color: #333; padding: 2px 8px; border-radius: 15px; font-size: 14px; display: flex; align-items: center; gap: 4px; }
+        .skip-level-btn span img { width: 14px; height: 14px; vertical-align: middle; }
+        .show-levels-btn { background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; }
+        
+        .complete-card h2 { font-size: 28px; margin-bottom: 10px; }
+        .complete-card h3 { font-size: 22px; margin-bottom: 10px; color: #FFD700; }
+        .stars-earned { font-size: 30px; margin: 15px 0; color: #FFD700; }
+        .next-level-info { background: rgba(255,255,255,0.15); border-radius: 20px; padding: 15px; margin: 20px 0; }
+        .next-targets { display: flex; justify-content: center; gap: 20px; }
+        .next-target-item { display: flex; flex-direction: column; align-items: center; }
+        .next-target-item div { font-size: 40px; }
+        .next-target-item span { font-size: 14px; margin-top: 5px; }
+        .complete-buttons { display: flex; gap: 10px; margin-top: 20px; }
+        .complete-buttons button { flex: 1; padding: 15px; border-radius: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+        .replay-btn { background: linear-gradient(45deg, #4a90e2, #357abd); color: white; }
+        .next-btn { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; }
+        
+        .daily-reward-card .streak-days { display: flex; justify-content: space-between; margin: 20px 0; }
+        .daily-reward-card .day-box {
+            width: 40px; height: 40px; background: rgba(255,255,255,0.5); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: bold;
+            border: 2px solid white; color: #333;
+        }
+        .day-box.active { background: #4CAF50; color: white; }
+        .day-box.completed { background: #4CAF50; color: white; }
+        .todays-reward { background: rgba(255,255,255,0.3); border-radius: 20px; padding: 20px; margin: 20px 0; }
+        .reward-amount { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 32px; font-weight: bold; }
+        .reward-buttons { display: flex; flex-direction: column; gap: 10px; }
+        .claim-btn { padding: 15px; border-radius: 15px; background: linear-gradient(45deg, #4CAF50, #45a049); color: white; font-weight: bold; font-size: 18px; cursor: pointer; box-shadow: 0 4px 0 #2d6a2d; }
+        .remind-btn { padding: 12px; border-radius: 15px; background: rgba(255,255,255,0.3); color: #333; font-weight: bold; cursor: pointer; }
+        
+        .stats-card h2 { font-size: 24px; color: #FFD700; margin-bottom: 20px; }
+        .stats-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .stat-item { display: flex; justify-content: space-between; padding: 8px 15px; background: rgba(255,255,255,0.15); border-radius: 10px; }
+        .stat-item span:last-child { color: #FFD700; font-weight: bold; }
+        .close-stats { position: relative; top: auto; right: auto; margin: 0 auto; width: auto; background: linear-gradient(45deg, #4CAF50, #45a049); color: white; border-radius: 25px; padding: 12px 30px; box-shadow: 0 4px 0 #2d6a2d; cursor: pointer; }
+        
+        .invite-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: 3px solid #FFD700;
+            max-width: 350px;
+            width: 90%;
+            border-radius: 30px;
+            padding: 20px;
+            text-align: center;
+            animation: modalPop 0.3s ease;
+            position: relative;
+        }
+        
+        .rewards-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin: 15px 0;
+            flex-wrap: nowrap;
+        }
+        
+        .reward-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 8px 4px;
+            flex: 1;
+            text-align: center;
+            min-width: 0;
+        }
+        
+        .reward-item .count {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+        
+        .reward-item .prize {
+            font-size: 10px;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .invite-link-box {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+        }
+        
+        .link-input-group {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+        
+        .link-input-group input {
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .copy-btn {
+            padding: 8px 12px;
+            border-radius: 10px;
+            background: #FFD700;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 12px;
+        }
+        
+        .stats-box {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 10px;
+            margin: 15px 0;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 13px;
+        }
+        
+        .stats-row span:last-child {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .heart-warning-card {
+            position: relative;
+            overflow: hidden;
+        }
+        .heart-warning-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,59,59,0.1) 0%, transparent 70%);
+            animation: rotateGlow 10s linear infinite;
+        }
+        @keyframes rotateGlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .heart-warning-icon { font-size: 70px; margin-bottom: 15px; animation: heartBeatWarning 1s ease-in-out infinite; position: relative; z-index: 1; }
+        @keyframes heartBeatWarning { 0%,100% { transform: scale(1); } 50% { transform: scale(1.2); text-shadow: 0 0 20px #ff3b3b; } }
+        .heart-warning-card h2 { font-size: 24px; margin-bottom: 10px; color: #FF8888; position: relative; z-index: 1; }
+        .heart-timer-circle { width: 100px; height: 100px; margin: 15px auto; position: relative; }
+        .heart-timer-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+        .timer-bg { stroke: rgba(255,255,255,0.2); stroke-width: 8; fill: none; }
+        .timer-progress { stroke: #ff3b3b; stroke-width: 8; fill: none; stroke-linecap: round; transition: stroke-dasharray 0.3s ease; }
+        .timer-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; font-weight: bold; color: white; }
+        .heart-warning-buttons { display: flex; gap: 12px; margin-top: 20px; position: relative; z-index: 1; }
+        .heart-warning-btn { flex: 1; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .heart-warning-btn:active { transform: scale(0.95); }
+        .heart-warning-btn.primary { background: linear-gradient(45deg, #4a90e2, #357abd); color: white; box-shadow: 0 4px 0 #1d4e7a; }
+        .heart-warning-btn.secondary { background: linear-gradient(45deg, #4CAF50, #45a049); color: white; box-shadow: 0 4px 0 #2d6a2d; }
+        .heart-warning-btn.watch { background: rgba(255,255,255,0.2); color: white; backdrop-filter: blur(5px); }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 2000;
+            animation: slideDown 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .toast-message {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+        }
+        
+        .toast-message.error { background: linear-gradient(45deg, #ff4444, #cc0000); }
+        
+        @keyframes slideDown { from { transform: translateX(-50%) translateY(-100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateX(-50%) translateY(100px); opacity: 0; } to { transform: translateX(-50%) translateY(0); opacity: 1; } }
+        
+        [dir="rtl"] .top-bar,
+        [dir="rtl"] .hearts-container,
+        [dir="rtl"] .coin-market,
+        [dir="rtl"] .target-section,
+        [dir="rtl"] .bottom-bar,
+        [dir="rtl"] .powerups {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .level-info {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .right-icons {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .heart-count {
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        [dir="rtl"] .coin-display {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .target-items {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .powerups {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .rewards-grid {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .stats-row {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .link-input-group {
+            flex-direction: row-reverse;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-wrapper">
+        <div class="game-background"></div>
+        <div class="game-container" id="gameContainer">
+            <div class="top-bar">
+                <div class="level-info">
+                    <span class="level-number" id="levelNumber">Level 1</span>
+                    <span class="level-btn" onclick="window.location.href='level.html'">📋</span>
+                </div>
+                <div class="right-icons">
+                    <span class="invite-icon" onclick="showInviteModal()">👥</span>
+                    <span class="stats-icon" onclick="stats.showStatsModal()">📊</span>
+                    <span class="pause-icon" id="pauseBtn" onclick="togglePauseGame()">⏸️</span>
+                    <span class="settings-icon" onclick="saveGameStateAndNavigate('settings.html')">⚙️</span>
+                </div>
+            </div>
+            
+            <div class="hearts-container">
+                <div class="heart-circle" id="heartCircle">
+                    <svg viewBox="0 0 50 50">
+                        <circle cx="25" cy="25" r="22" class="heart-circle-bg" />
+                        <circle cx="25" cy="25" r="22" class="heart-circle-progress" id="heartProgress" stroke-dasharray="138.23" stroke-dashoffset="0" />
+                    </svg>
+                    <div class="heart-icon-center" id="heartIcon">❤️</div>
+                </div>
+                <span class="heart-count" id="heartCount">5</span>
+                <span class="heart-timer-text" id="heartTimerText">10:00</span>
+            </div>
+            
+            <div class="coin-market">
+                <div class="coin-display">
+                    <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img">
+                    <span class="coin-amount" id="coinAmount">20</span>
+                </div>
+                <button class="market-button" onclick="saveGameStateAndNavigate('market.html')">🛒</button>
+            </div>
+            
+            <div id="giftBox" class="gift-box">🎁 HEDİYE</div>
+            
+            <div class="target-section">
+                <div class="target-title" id="targetTitle">HEDEF</div>
+                <div class="target-items" id="targetItems"></div>
+                <div class="target-time" id="targetTime">⏱️ 60s</div>
+            </div>
+            
+            <div class="game-area" id="gameArea">
+                <canvas id="gameCanvas"></canvas>
+            </div>
+            
+            <div class="bottom-bar">
+                <div class="moves-counter" id="movesLabel">Hamle: <span id="movesCount">15</span></div>
+                <div class="score-display" id="scoreLabel">⭐ <span id="scoreDisplay">0</span></div>
+            </div>
+            
+            <div class="powerups">
+                <button class="powerup-btn ice-btn" onclick="buyIce()">
+                    <span id="iceLabel">❄️ Buz</span>
+                    <span class="price"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-sm"> <span id="icePrice">5</span></span>
+                    <span class="gift-counter" id="iceCount" style="display:none;">0</span>
+                </button>
+                <button class="powerup-btn extra-move-btn" onclick="buyExtraMoves()">
+                    <span id="moveLabel">➕ Hamle +5</span>
+                    <span class="price"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-sm"> <span id="movePrice">5</span></span>
+                    <span class="gift-counter" id="moveCount" style="display:none;">0</span>
+                </button>
+                <button class="powerup-btn extra-time-btn" onclick="buyExtraTime()">
+                    <span id="timeLabel">⏰ Süre +10</span>
+                    <span class="price"><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img-sm"> <span id="timePrice">5</span></span>
+                    <span class="gift-counter" id="timeCount" style="display:none;">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+<!-- INFO MODAL - KIRMIZI ÇARPI EKLENDİ -->
+<div class="info-modal" id="infoModal">
+    <div class="info-card">
+        <button class="close-modal-red" onclick="closeInfoModal()">✖</button>
+        <div class="info-icon">🍎🍓🍊</div>
+        <h2 id="infoTitle">NASIL OYNANIR?</h2>
+        <p id="infoText">Hedef meyveleri topla, oyunu kazan!</p>
+        <div class="info-highlight" id="infoHighlight"><span>🎯</span><span id="targetExample">5 🍎</span></div>
+        <p id="infoDesc">Yukarıdaki hedef bölümünde hangi meyvelerden kaç tane toplaman gerektiği yazıyor. Meyvelere tıkla, hedefe ulaş, yıldızları kazan!</p>
+        <div class="info-footer" id="infoFooter">İyi eğlenceler! 🚀</div>
+    </div>
+</div>
+    
+    <!-- LEVEL FAILED MODAL -->
+    <div class="level-failed-modal" id="levelFailedModal">
+        <div class="failed-card">
+            <h2 id="failedTitle">😞 LEVEL BAŞARISIZ</h2>
+            <div class="failed-icon">⏰</div>
+            <div class="remaining-targets"><p id="remainingTitle">🎯 Tamamlanamayan Hedefler:</p><div class="remaining-items" id="remainingTargets"></div></div>
+            <div class="failed-buttons">
+                <button class="replay-failed-btn" id="replayFailedBtn" onclick="replayFailedLevel()">🔄 Tekrar Dene</button>
+                <button class="skip-level-btn" id="skipLevelBtn" onclick="skipFailedLevel()">⏩ Level Atla <span><img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" style="width:14px;height:14px;"> 8</span></button>
+                <button class="show-levels-btn" id="showLevelsBtn" onclick="showLevels()">📋 Seviyeleri Göster</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- LEVEL COMPLETE MODAL -->
+    <div class="level-complete-modal" id="levelCompleteModal">
+        <div class="complete-card">
+            <h2 id="completeTitle">🎉 TEBRİKLER! 🎉</h2>
+            <h3 id="completedLevel">Level 1 Tamamlandı!</h3>
+            <div class="stars-earned" id="earnedStars">⭐⭐⭐</div>
+            <div class="next-level-info"><p id="nextTargetsTitle">🎯 SONRAKİ LEVEL HEDEFLERİ:</p><div class="next-targets" id="nextTargets"></div></div>
+            <div class="complete-buttons">
+                <button class="replay-btn" id="replayCompleteBtn" onclick="replayLevel()">🔄 Tekrar Oyna</button>
+                <button class="next-btn" id="nextLevelBtn" onclick="nextLevel()">➡️ İleri Level</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- DAILY REWARD MODAL -->
+    <div class="daily-reward-modal" id="dailyRewardModal">
+        <div class="daily-reward-card">
+            <button class="close-modal-red" onclick="closeDailyReward()">✖</button>
+            <div class="reward-icon">🎁</div>
+            <h2 id="dailyTitle">GÜNLÜK ÖDÜL</h2>
+            <div class="streak-days" id="streakDays">
+                <span class="day-box" id="day1">1</span>
+                <span class="day-box" id="day2">2</span>
+                <span class="day-box" id="day3">3</span>
+                <span class="day-box" id="day4">4</span>
+                <span class="day-box" id="day5">5</span>
+                <span class="day-box" id="day6">6</span>
+                <span class="day-box" id="day7">7</span>
+            </div>
+            <div class="todays-reward">
+                <p id="todaysRewardLabel">Bugünkü Ödülün:</p>
+                <div class="reward-amount">
+                    <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="daily-coin-icon">
+                    <span id="rewardCoins">10</span>
+                </div>
+                <div class="reward-extra" id="rewardExtra"></div>
+            </div>
+            <div class="reward-buttons">
+                <button class="claim-btn" id="claimBtn" onclick="claimDailyReward()">ÖDÜLÜ AL</button>
+                <button class="remind-btn" id="remindBtn" onclick="closeDailyReward()">Daha Sonra</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="stats-modal" id="statsModal">
+        <div class="stats-card">
+            <button class="close-modal-red" onclick="stats.closeStatsModal()">✖</button>
+            <h2 id="statsTitle">📊 İSTATİSTİKLER</h2>
+            <div class="stats-grid">
+                <div class="stat-item"><span id="statLevelsLabel">🎮 Oynanan Level:</span><span id="statLevels">0</span></div>
+                <div class="stat-item"><span id="statFruitsLabel">🍎 Toplanan Meyve:</span><span id="statFruits">0</span></div>
+                <div class="stat-item"><span id="statStarsLabel">⭐ Kazanılan Yıldız:</span><span id="statStars">0</span></div>
+                <div class="stat-item"><span id="statBombsLabel">💣 Patlatılan Bomba:</span><span id="statBombs">0</span></div>
+                <div class="stat-item"><span id="statIceLabel">❄️ Kullanılan Buz:</span><span id="statIce">0</span></div>
+                <div class="stat-item"><span id="statStreakLabel">🔥 En Uzun Seri:</span><span id="statStreak">0</span></div>
+                <div class="stat-item"><span id="statPerfectLabel">🏆 Mükemmel Level:</span><span id="statPerfect">0</span></div>
+                <div class="stat-item"><span id="statTimeLabel">⏱️ Toplam Süre:</span><span id="statTime">0</span></div>
+            </div>
+            <button class="close-stats" id="closeStatsBtn" onclick="stats.closeStatsModal()">Kapat</button>
+        </div>
+    </div>
+    
+    <div class="invite-modal" id="inviteModal">
+        <div class="invite-card">
+            <button class="close-modal-red" onclick="closeInviteModal()">✖</button>
+            <h2 id="inviteTitle">👥 Arkadaşını Davet Et</h2>
+            <div class="invite-link-box">
+                <p id="inviteLinkLabel">🔗 Davet Linkin:</p>
+                <div class="link-input-group">
+                    <input type="text" id="inviteLink" value="https://fruitcombine.com/ref/12345" readonly>
+                    <button class="copy-btn" id="copyBtn" onclick="copyInviteLink()">📋 KOPYALA</button>
+                </div>
+            </div>
+            <div class="rewards-grid">
+                <div class="reward-item" id="reward1"><div class="count">1</div><div class="prize">30 Jeton</div></div>
+                <div class="reward-item" id="reward2"><div class="count">2</div><div class="prize">50 Jeton</div></div>
+                <div class="reward-item" id="reward3"><div class="count">3</div><div class="prize">75 Jeton<br>+ Buz</div></div>
+                <div class="reward-item" id="reward4"><div class="count">4</div><div class="prize">100 Jeton<br>+ Hamle+5</div></div>
+                <div class="reward-item" id="reward5"><div class="count">5</div><div class="prize">125 Jeton<br>+1 Kalp</div></div>
+            </div>
+            <div class="stats-box">
+                <div class="stats-row"><span id="inviteCountLabel">📊 Davet Ettiğin:</span><span id="modalInviteCount">0</span></div>
+                <div class="stats-row"><span id="inviteEarnedLabel">💰 Kazandığın:</span><span id="modalInviteEarned">0</span></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="heart-warning-modal" id="heartWarningModal">
+        <div class="heart-warning-card">
+            <button class="close-modal-red" onclick="closeHeartWarning()">✖</button>
+            <div class="heart-warning-icon">❤️</div>
+            <h2 id="heartWarningTitle">Yetersiz Kalp!</h2>
+            <p id="heartWarningText">Oyuna devam etmek için kalp gerekiyor.</p>
+            <div class="heart-timer-circle">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="45" class="timer-bg" />
+                    <circle cx="50" cy="50" r="45" class="timer-progress" id="warningTimerProgress" stroke-dasharray="282.74" stroke-dashoffset="0" />
+                </svg>
+                <div class="timer-text" id="warningTimerText">10:00</div>
+            </div>
+            <div class="heart-warning-buttons">
+                <button class="heart-warning-btn watch" id="heartWarningOk" onclick="closeHeartWarning()">Tamam</button>
+                <button class="heart-warning-btn secondary" id="heartWarningMarket" onclick="window.location.href='market.html'">Market</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // ============= GAME STATE =============
+        const gameState = {
+            currentLevel: 1,
+            coins: 20,  // BAŞLANGIÇ JETONU 20 OLARAK DEĞİŞTİRİLDİ
+            hearts: 5,
+            maxHearts: 5,
+            heartTimer: 600,
+            moves: 0,
+            maxMoves: 0,
+            maxTime: 60,
+            timeLeft: 60,
+            score: 0,
+            targetFruits: [],
+            collectedFruits: {},
+            isGameActive: true,
+            isFrozen: false,
+            freezeTimer: 0,
+            fruits: [],
+            bombs: [],
+            iceCubes: [],
+            fruitSpeed: 0.6,
+            baseSpeed: 0.6,
+            maxSpeed: 2.2,
+            lastSpawnTime: 0,
+            spawnInterval: 800,
+            spawnCount: 1,
+            canvas: null,
+            ctx: null,
+            animationFrame: null,
+            sounds: {},
+            musicEnabled: true,
+            soundEnabled: true,
+            fruitEmojis: {
+                apple: '🍎', strawberry: '🍓', orange: '🍊', banana: '🍌', grape: '🍇', watermelon: '🍉'
+            },
+            lastSpeedIncrease: 0,
+            bombEffect: null,
+            levelCompleteCount: 0,
+            giftItems: {
+                ice: parseInt(localStorage.getItem('gift_ice') || '0'),
+                move: parseInt(localStorage.getItem('gift_move') || '0'),
+                time: parseInt(localStorage.getItem('gift_time') || '0')
+            },
+            isBackground: false,
+            infoShown: {
+                level1: localStorage.getItem('info_shown_level1') === 'true',
+                level2: localStorage.getItem('info_shown_level2') === 'true'
+            },
+            levelConfigCache: {},
+            heartUpdateInterval: null,
+            isGameOverProcessing: false,
+            lastHeartUpdate: Date.now(),
+            savedGameState: null  // OYUN DURUMUNU KAYDETMEK İÇİN
+        };
+
+        // OYUN DURUMUNU KAYDETME FONKSİYONU (NAVIGASYON İÇİN)
+        function saveGameStateAndNavigate(url) {
+            if (gameState.isGameActive && !gameState.isGameOverProcessing) {
+                // Oyunu duraklat
+                if (!isGamePaused) {
+                    togglePauseGame();
+                }
+                // Oyun durumunu localStorage'a kaydet
+                const savedState = {
+                    currentLevel: gameState.currentLevel,
+                    moves: gameState.moves,
+                    maxMoves: gameState.maxMoves,
+                    timeLeft: gameState.timeLeft,
+                    maxTime: gameState.maxTime,
+                    score: gameState.score,
+                    targetFruits: gameState.targetFruits,
+                    collectedFruits: gameState.collectedFruits,
+                    fruits: gameState.fruits,
+                    bombs: gameState.bombs,
+                    iceCubes: gameState.iceCubes,
+                    isFrozen: gameState.isFrozen,
+                    freezeTimer: gameState.freezeTimer,
+                    isGameActive: gameState.isGameActive,
+                    fruitSpeed: gameState.fruitSpeed
+                };
+                localStorage.setItem('savedGameState', JSON.stringify(savedState));
+                localStorage.setItem('isGameSaved', 'true');
+            }
+            // Sayfaya yönlendir
+            window.location.href = url;
+        }
+
+        // KAYDEDİLMİŞ OYUNU YÜKLEME FONKSİYONU
+        function loadSavedGameIfExists() {
+            const isSaved = localStorage.getItem('isGameSaved') === 'true';
+            if (isSaved) {
+                const savedState = localStorage.getItem('savedGameState');
+                if (savedState) {
+                    try {
+                        const state = JSON.parse(savedState);
+                        gameState.currentLevel = state.currentLevel;
+                        gameState.moves = state.moves;
+                        gameState.maxMoves = state.maxMoves;
+                        gameState.timeLeft = state.timeLeft;
+                        gameState.maxTime = state.maxTime;
+                        gameState.score = state.score;
+                        gameState.targetFruits = state.targetFruits;
+                        gameState.collectedFruits = state.collectedFruits;
+                        gameState.fruits = state.fruits || [];
+                        gameState.bombs = state.bombs || [];
+                        gameState.iceCubes = state.iceCubes || [];
+                        gameState.isFrozen = state.isFrozen || false;
+                        gameState.freezeTimer = state.freezeTimer || 0;
+                        gameState.fruitSpeed = state.fruitSpeed || 0.6;
+                        gameState.isGameActive = true;
+                        updateUI();
+                        // Kaydı temizle
+                        localStorage.removeItem('savedGameState');
+                        localStorage.removeItem('isGameSaved');
+                        return true;
+                    } catch(e) {
+                        console.log('Kayıtlı oyun yüklenemedi', e);
+                    }
+                }
+            }
+            return false;
+        }
+
+        const allFruitTypes = ['apple', 'strawberry', 'orange', 'banana', 'grape', 'watermelon'];
+
+        // ============= UI FUNCTIONS =============
+        function updateUI() {
+            const levelNum = document.getElementById('levelNumber');
+            if (levelNum) levelNum.innerHTML = `${t('level')} ${gameState.currentLevel}`;
+            const targetTitle = document.getElementById('targetTitle');
+            if (targetTitle) targetTitle.innerHTML = t('target');
+            const movesLabel = document.getElementById('movesLabel');
+            if (movesLabel) movesLabel.innerHTML = `${t('moves')}: <span id="movesCount">${gameState.moves}</span>`;
+            const scoreLabel = document.getElementById('scoreLabel');
+            if (scoreLabel) scoreLabel.innerHTML = `⭐ <span id="scoreDisplay">${gameState.score}</span>`;
+            const iceLabel = document.getElementById('iceLabel');
+            if (iceLabel) iceLabel.innerHTML = t('ice');
+            const moveLabel = document.getElementById('moveLabel');
+            if (moveLabel) moveLabel.innerHTML = t('extra_move');
+            const timeLabel = document.getElementById('timeLabel');
+            if (timeLabel) timeLabel.innerHTML = t('extra_time');
+            document.getElementById('coinAmount').textContent = gameState.coins;
+            document.getElementById('heartCount').textContent = gameState.hearts;
+            const targetContainer = document.getElementById('targetItems');
+            if (targetContainer) {
+                targetContainer.innerHTML = '';
+                gameState.targetFruits.forEach(target => {
+                    const collected = gameState.collectedFruits[target.fruit] || 0;
+                    targetContainer.innerHTML += `<div class="target-item"><div>${gameState.fruitEmojis[target.fruit]}</div><span>${collected}/${target.count}</span></div>`;
+                });
+            }
+            document.getElementById('targetTime').textContent = `⏱️ ${Math.max(0, Math.floor(gameState.timeLeft))}s`;
+            document.getElementById('movesCount').textContent = gameState.moves;
+            document.getElementById('scoreDisplay').textContent = gameState.score;
+            localStorage.setItem('coins', gameState.coins);
+        }
+
+        function updateHeartCircle(percent) {
+            const radius = 22;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference * (1 - percent);
+            const progressCircle = document.getElementById('heartProgress');
+            if (progressCircle) {
+                progressCircle.style.strokeDasharray = `${circumference}`;
+                progressCircle.style.strokeDashoffset = offset;
+            }
+            const heartIcon = document.getElementById('heartIcon');
+            if (heartIcon) {
+                heartIcon.style.textShadow = `0 0 ${10 + (1 - percent) * 20}px #ff3b3b`;
+                if (percent < 0.3) heartIcon.style.color = '#ff8888';
+                else heartIcon.style.color = '#ff3b3b';
+                heartIcon.classList.add('animating');
+                setTimeout(() => heartIcon.classList.remove('animating'), 300);
+            }
+        }
+
+        function updateHeartTimerDisplay() {
+            const mins = Math.floor(gameState.heartTimer / 60);
+            const secs = gameState.heartTimer % 60;
+            document.getElementById('heartTimerText').textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            const percent = Math.max(0, gameState.heartTimer / 600);
+            updateHeartCircle(percent);
+            const warningTimerText = document.getElementById('warningTimerText');
+            const warningProgress = document.getElementById('warningTimerProgress');
+            if (warningTimerText) warningTimerText.textContent = `${mins}:${secs.toString().padStart(2, '0')}`;
+            if (warningProgress) {
+                const radius = 45;
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference * (1 - percent);
+                warningProgress.style.strokeDasharray = `${circumference}`;
+                warningProgress.style.strokeDashoffset = offset;
+            }
+        }
+
+        function showHeartWarningModal() {
+            const modal = document.getElementById('heartWarningModal');
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.classList.add('blur');
+            modal.classList.add('active');
+            gameState.isGameActive = false;
+            updateHeartTimerDisplay();
+            if (window.heartWarningInterval) clearInterval(window.heartWarningInterval);
+            window.heartWarningInterval = setInterval(() => {
+                updateHeartTimerDisplay();
+                if (gameState.hearts > 0) closeHeartWarning();
+            }, 1000);
+        }
+
+        function closeHeartWarning() {
+            const modal = document.getElementById('heartWarningModal');
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.classList.remove('blur');
+            modal.classList.remove('active');
+            if (window.heartWarningInterval) clearInterval(window.heartWarningInterval);
+            if (gameState.hearts > 0) {
+                loadLevel(gameState.currentLevel);
+                gameState.isGameActive = true;
+                startHeartTimer();
+                gameState.isGameOverProcessing = false;
+            }
+        }
+
+        function getLevelConfig(level) {
+            if (gameState.levelConfigCache[level]) return gameState.levelConfigCache[level];
+            try {
+                const fixedLevels = {
+                    1: { targets: [{ fruit: 'apple', count: 5 }], time: 80, moves: 15 },
+                    2: { targets: [{ fruit: 'strawberry', count: 6 }], time: 75, moves: 15 },
+                    3: { targets: [{ fruit: 'orange', count: 7 }], time: 70, moves: 16 },
+                    4: { targets: [{ fruit: 'banana', count: 8 }], time: 70, moves: 17 },
+                    5: { targets: [{ fruit: 'grape', count: 9 }], time: 65, moves: 18 },
+                    6: { targets: [{ fruit: 'watermelon', count: 5 }], time: 65, moves: 15 },
+                    7: { targets: [{ fruit: 'apple', count: 7 }, { fruit: 'strawberry', count: 5 }], time: 70, moves: 22 },
+                    8: { targets: [{ fruit: 'orange', count: 6 }, { fruit: 'banana', count: 6 }], time: 68, moves: 22 },
+                    9: { targets: [{ fruit: 'grape', count: 5 }, { fruit: 'watermelon', count: 5 }], time: 66, moves: 20 },
+                    10: { targets: [{ fruit: 'apple', count: 8 }, { fruit: 'strawberry', count: 6 }, { fruit: 'orange', count: 4 }], time: 75, moves: 30 },
+                    11: { targets: [{ fruit: 'banana', count: 7 }, { fruit: 'grape', count: 6 }], time: 73, moves: 25 },
+                    12: { targets: [{ fruit: 'watermelon', count: 6 }, { fruit: 'apple', count: 5 }], time: 72, moves: 23 },
+                    13: { targets: [{ fruit: 'strawberry', count: 8 }, { fruit: 'orange', count: 7 }], time: 74, moves: 27 },
+                    14: { targets: [{ fruit: 'grape', count: 9 }, { fruit: 'banana', count: 5 }], time: 70, moves: 26 },
+                    15: { targets: [{ fruit: 'watermelon', count: 7 }, { fruit: 'strawberry', count: 6 }, { fruit: 'apple', count: 4 }], time: 78, moves: 30 },
+                    16: { targets: [{ fruit: 'orange', count: 8 }, { fruit: 'grape', count: 7 }], time: 72, moves: 27 },
+                    17: { targets: [{ fruit: 'banana', count: 9 }, { fruit: 'watermelon', count: 6 }], time: 71, moves: 27 },
+                    18: { targets: [{ fruit: 'apple', count: 10 }, { fruit: 'strawberry', count: 8 }], time: 75, moves: 32 },
+                    19: { targets: [{ fruit: 'orange', count: 9 }, { fruit: 'grape', count: 8 }, { fruit: 'banana', count: 5 }], time: 80, moves: 35 },
+                    20: { targets: [{ fruit: 'watermelon', count: 10 }, { fruit: 'apple', count: 8 }, { fruit: 'strawberry', count: 6 }], time: 85, moves: 38 }
+                };
+                if (fixedLevels[level]) {
+                    const config = { ...fixedLevels[level], speed: 0.8 };
+                    gameState.levelConfigCache[level] = config;
+                    return config;
+                }
+                let targetCount = 2, baseCount;
+                if (level <= 25) { targetCount = 2; baseCount = 6 + Math.floor((level - 20) * 0.8); }
+                else if (level <= 30) { targetCount = (level % 3 === 0) ? 3 : 2; baseCount = 7 + Math.floor((level - 25) * 0.8); }
+                else if (level <= 35) { targetCount = (level % 2 === 0) ? 3 : 2; baseCount = 8 + Math.floor((level - 30) * 0.7); }
+                else { targetCount = 3; baseCount = 9 + Math.floor((level - 35) * 0.8); }
+                const targets = [];
+                const usedFruits = [];
+                for (let i = 0; i < targetCount; i++) {
+                    const fruitIndex = (level * 3 + i * 7) % allFruitTypes.length;
+                    const fruit = allFruitTypes[fruitIndex];
+                    if (!usedFruits.includes(fruit)) {
+                        usedFruits.push(fruit);
+                        let count = (i === 0) ? baseCount : Math.max(4, baseCount - 2);
+                        targets.push({ fruit, count });
+                    }
+                }
+                const totalTarget = targets.reduce((sum, t) => sum + t.count, 0);
+                let time;
+                if (level <= 30) time = 75 - (level - 20) * 1.2;
+                else if (level <= 40) time = 65 - (level - 30) * 1.2;
+                else time = 55 - (level - 40) * 1;
+                time = Math.max(40, Math.min(80, Math.floor(time)));
+                const moves = totalTarget + Math.max(4, Math.floor(totalTarget * 0.2));
+                const config = { targets, time, moves, speed: 0.8 };
+                gameState.levelConfigCache[level] = config;
+                return config;
+            } catch (error) {
+                return { targets: [{ fruit: 'apple', count: 8 }], time: 60, moves: 15, speed: 0.8 };
+            }
+        }
+
+        function initGame() {
+            gameState.canvas = document.getElementById('gameCanvas');
+            if (!gameState.canvas) return;
+            gameState.ctx = gameState.canvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            gameState.canvas.addEventListener('click', handleCanvasClick);
+            gameState.canvas.addEventListener('touchstart', (e) => { e.preventDefault(); if (e.touches[0]) handleCanvasClick(e.touches[0]); });
+            loadSounds();
+            gameLoop();
+        }
+
+        function resizeCanvas() { const container = document.querySelector('.game-area'); if (container && gameState.canvas) { gameState.canvas.width = container.clientWidth; gameState.canvas.height = container.clientHeight; } }
+        
+        function loadSounds() { 
+            gameState.sounds = { 
+                background: document.getElementById('backgroundMusic'), 
+                click: document.getElementById('clickSound'), 
+                match3: document.getElementById('match3Sound'), 
+                match4: document.getElementById('match4Sound'), 
+                match5Plus: document.getElementById('match5PlusSound'), 
+                bomb: document.getElementById('bombSound') 
+            }; 
+        }
+        
+        function loadSettings() { 
+            const savedMusic = localStorage.getItem('musicEnabled'); 
+            const savedSound = localStorage.getItem('soundEnabled'); 
+            gameState.musicEnabled = savedMusic !== null ? savedMusic === 'true' : true; 
+            gameState.soundEnabled = savedSound !== null ? savedSound === 'true' : true; 
+        }
+        
+        function startHeartTimer() {
+            if (gameState.heartUpdateInterval) clearInterval(gameState.heartUpdateInterval);
+            gameState.heartUpdateInterval = setInterval(() => {
+                if (!isGamePaused) {
+                    if (gameState.hearts < gameState.maxHearts) {
+                        gameState.heartTimer--;
+                        if (gameState.heartTimer <= 0) {
+                            gameState.hearts++;
+                            gameState.heartTimer = 600;
+                            localStorage.setItem('hearts', gameState.hearts);
+                            if (!gameState.isGameActive && gameState.hearts > 0) closeHeartWarning();
+                        }
+                    }
+                    updateUI();
+                    updateHeartTimerDisplay();
+                    localStorage.setItem('heartTimer', gameState.heartTimer);
+                    localStorage.setItem('lastHeartUpdate', Date.now());
+                }
+            }, 1000);
+        }
+
+        function loadLevel(level) {
+            try {
+                const config = getLevelConfig(level);
+                gameState.targetFruits = config.targets;
+                gameState.timeLeft = config.time;
+                gameState.maxTime = config.time;
+                gameState.moves = config.moves;
+                gameState.maxMoves = config.moves;
+                gameState.fruitSpeed = 0.6;
+                gameState.baseSpeed = 0.6;
+                gameState.collectedFruits = {};
+                gameState.score = 0;
+                gameState.fruits = [];
+                gameState.bombs = [];
+                gameState.iceCubes = [];
+                gameState.bombEffect = null;
+                config.targets.forEach(target => { gameState.collectedFruits[target.fruit] = 0; });
+                updateUI();
+                if (level === 1 && !gameState.infoShown.level1) setTimeout(() => showInfoModal(1), 500);
+                else if (level === 2 && !gameState.infoShown.level2) setTimeout(() => showInfoModal(2), 500);
+            } catch (error) {
+                gameState.targetFruits = [{ fruit: 'apple', count: 5 }];
+                gameState.timeLeft = 60;
+                gameState.maxTime = 60;
+                gameState.moves = 15;
+                gameState.maxMoves = 15;
+                gameState.collectedFruits = { apple: 0 };
+                updateUI();
+            }
+        }
+
+        let isGamePaused = false;
+        let pauseOverlay = null;
+        let windowHeartTimerDuringPause = null;
+        
+        function togglePauseGame() {
+            const pauseBtn = document.getElementById('pauseBtn');
+            const gameArea = document.getElementById('gameArea');
+            
+            if (!isGamePaused) {
+                isGamePaused = true;
+                gameState.isGameActive = false;
+                pauseBtn.innerHTML = '▶️';
+                pauseBtn.style.color = '#4CAF50';
+                
+                if (gameState.heartUpdateInterval) {
+                    clearInterval(gameState.heartUpdateInterval);
+                    gameState.heartUpdateInterval = null;
+                }
+                
+                if (!windowHeartTimerDuringPause) {
+                    windowHeartTimerDuringPause = setInterval(() => {
+                        if (gameState.hearts < gameState.maxHearts) {
+                            gameState.heartTimer--;
+                            if (gameState.heartTimer <= 0) {
+                                gameState.hearts++;
+                                gameState.heartTimer = 600;
+                                localStorage.setItem('hearts', gameState.hearts);
+                            }
+                        }
+                        updateUI();
+                        updateHeartTimerDisplay();
+                        localStorage.setItem('heartTimer', gameState.heartTimer);
+                        localStorage.setItem('lastHeartUpdate', Date.now());
+                    }, 1000);
+                }
+                
+                if (!pauseOverlay) {
+                    pauseOverlay = document.createElement('div');
+                    pauseOverlay.className = 'pause-overlay';
+                    pauseOverlay.innerHTML = `<div class="pause-overlay-text">⏸️ ${t('game_paused')} ⏸️<br><span class="pause-overlay-sub">▶️ ${t('click_to_resume')}</span></div>`;
+                    gameArea.appendChild(pauseOverlay);
+                } else {
+                    pauseOverlay.style.display = 'flex';
+                    const pauseText = pauseOverlay.querySelector('.pause-overlay-text');
+                    if (pauseText) {
+                        pauseText.innerHTML = `⏸️ ${t('game_paused')} ⏸️<br><span class="pause-overlay-sub">▶️ ${t('click_to_resume')}</span>`;
+                    }
+                }
+                
+                const canvas = document.getElementById('gameCanvas');
+                if (canvas) canvas.style.filter = 'blur(3px)';
+                showToast(`⏸️ ${t('game_paused')} ${t('heart_continues')}`);
+                
+            } else {
+                isGamePaused = false;
+                gameState.isGameActive = true;
+                pauseBtn.innerHTML = '⏸️';
+                pauseBtn.style.color = 'white';
+                
+                if (windowHeartTimerDuringPause) {
+                    clearInterval(windowHeartTimerDuringPause);
+                    windowHeartTimerDuringPause = null;
+                }
+                startHeartTimer();
+                
+                if (pauseOverlay) pauseOverlay.style.display = 'none';
+                const canvas = document.getElementById('gameCanvas');
+                if (canvas) canvas.style.filter = 'none';
+                showToast(`▶️ ${t('game_resumed')}`);
+            }
+        }
+
+        function gameLoop() { 
+            if (isGamePaused) { 
+                gameState.animationFrame = requestAnimationFrame(gameLoop); 
+                return; 
+            }
+            if (!gameState.isGameActive) { 
+                gameState.animationFrame = requestAnimationFrame(gameLoop); 
+                return; 
+            } 
+            update(); 
+            draw(); 
+            gameState.animationFrame = requestAnimationFrame(gameLoop); 
+        }
+        
+        function update() {
+            const now = Date.now();
+            if (!gameState.isFrozen) {
+                gameState.timeLeft -= 1/60;
+                if (gameState.timeLeft <= 0) { gameOver(false); return; }
+                
+                // MEYVE HIZI - SÜRE AZALDIKÇA KADEMELİ ARTSIN
+                if (gameState.timeLeft > 50) {
+                    gameState.fruitSpeed = 0.6;
+                } else if (gameState.timeLeft > 40) {
+                    gameState.fruitSpeed = 0.8;
+                } else if (gameState.timeLeft > 30) {
+                    gameState.fruitSpeed = 1.0;
+                } else if (gameState.timeLeft > 20) {
+                    gameState.fruitSpeed = 1.2;
+                } else if (gameState.timeLeft > 10) {
+                    gameState.fruitSpeed = 1.4;
+                } else {
+                    gameState.fruitSpeed = 2.0;
+                }
+            }
+            if (gameState.isFrozen) { gameState.freezeTimer -= 1/60; if (gameState.freezeTimer <= 0) gameState.isFrozen = false; }
+            if (now - gameState.lastSpawnTime > gameState.spawnInterval) {
+                for (let i = 0; i < gameState.spawnCount; i++) spawnFruit();
+                gameState.lastSpawnTime = now;
+                if (Math.random() < 0.08) spawnBomb();
+                if (Math.random() < 0.10) spawnIce();
+            }
+            if (!gameState.isFrozen) {
+                gameState.fruits.forEach(f => f.y += gameState.fruitSpeed);
+                gameState.bombs.forEach(b => b.y += gameState.fruitSpeed);
+                gameState.iceCubes.forEach(i => i.y += gameState.fruitSpeed);
+            }
+            gameState.fruits = gameState.fruits.filter(f => f.y < gameState.canvas.height + 50);
+            gameState.bombs = gameState.bombs.filter(b => b.y < gameState.canvas.height + 50);
+            gameState.iceCubes = gameState.iceCubes.filter(i => i.y < gameState.canvas.height + 50);
+            if (gameState.bombEffect) { gameState.bombEffect.life -= 1/60; gameState.bombEffect.radius += 5; if (gameState.bombEffect.life <= 0) gameState.bombEffect = null; }
+        }
+
+        function draw() {
+            if (!gameState.ctx) return;
+            const ctx = gameState.ctx;
+            ctx.clearRect(0, 0, gameState.canvas.width, gameState.canvas.height);
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 2;
+            ctx.shadowOffsetY = 1;
+            ctx.font = 'bold 40px "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            gameState.fruits.forEach(fruit => {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillText(gameState.fruitEmojis[fruit.type], fruit.x + 2, fruit.y + 2);
+                ctx.fillStyle = '#fff';
+                ctx.fillText(gameState.fruitEmojis[fruit.type], fruit.x, fruit.y);
+            });
+            gameState.bombs.forEach(bomb => {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillText('💣', bomb.x + 2, bomb.y + 2);
+                ctx.fillStyle = '#333';
+                ctx.fillText('💣', bomb.x, bomb.y);
+            });
+            gameState.iceCubes.forEach(ice => {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillText('❄️', ice.x + 2, ice.y + 2);
+                ctx.fillStyle = '#4aa3ff';
+                ctx.fillText('❄️', ice.x, ice.y);
+            });
+            if (gameState.bombEffect) {
+                ctx.globalAlpha = gameState.bombEffect.life;
+                ctx.fillStyle = '#FFA500';
+                ctx.beginPath();
+                ctx.arc(gameState.bombEffect.x, gameState.bombEffect.y, gameState.bombEffect.radius * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#FF4444';
+                ctx.beginPath();
+                ctx.arc(gameState.bombEffect.x, gameState.bombEffect.y, gameState.bombEffect.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+            if (gameState.isFrozen) {
+                ctx.fillStyle = 'rgba(173, 216, 230, 0.3)';
+                ctx.fillRect(0, 0, gameState.canvas.width, gameState.canvas.height);
+            }
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetY = 0;
+        }
+
+        // ============ MEYVE SPAWN SİSTEMİ ============
+        function spawnFruit() { 
+            let randomX = 40 + Math.random() * (gameState.canvas.width - 80);
+            let fruitType;
+            let targetFruitTypes = gameState.targetFruits.map(t => t.fruit);
+            
+            if (targetFruitTypes.length > 0 && Math.random() < 0.50) {
+                let randomIndex = Math.floor(Math.random() * targetFruitTypes.length);
+                fruitType = targetFruitTypes[randomIndex];
+            } else {
+                fruitType = allFruitTypes[Math.floor(Math.random() * allFruitTypes.length)];
+            }
+            
+            gameState.fruits.push({ 
+                type: fruitType, 
+                x: randomX, 
+                y: -40 - Math.random() * 30 
+            }); 
+        }
+        
+        function spawnBomb() { 
+            gameState.bombs.push({ 
+                x: 40 + Math.random() * (gameState.canvas.width - 80), 
+                y: -40 - Math.random() * 30 
+            }); 
+        }
+        
+        function spawnIce() { 
+            gameState.iceCubes.push({ 
+                x: 40 + Math.random() * (gameState.canvas.width - 80), 
+                y: -40 - Math.random() * 30 
+            }); 
+        }
+
+        function handleCanvasClick(event) {
+            if (!gameState.isGameActive || isGamePaused) return;
+            const rect = gameState.canvas.getBoundingClientRect();
+            const scaleX = gameState.canvas.width / rect.width;
+            const scaleY = gameState.canvas.height / rect.height;
+            const x = (event.clientX - rect.left) * scaleX;
+            const y = (event.clientY - rect.top) * scaleY;
+            const fruitIndex = gameState.fruits.findIndex(f => Math.abs(f.x - x) < 35 && Math.abs(f.y - y) < 35);
+            if (fruitIndex !== -1) { collectFruit(gameState.fruits[fruitIndex]); gameState.fruits.splice(fruitIndex, 1); return; }
+            const bombIndex = gameState.bombs.findIndex(b => Math.abs(b.x - x) < 35 && Math.abs(b.y - y) < 35);
+            if (bombIndex !== -1) { triggerBomb(gameState.bombs[bombIndex].x, gameState.bombs[bombIndex].y); gameState.bombs.splice(bombIndex, 1); return; }
+            const iceIndex = gameState.iceCubes.findIndex(i => Math.abs(i.x - x) < 35 && Math.abs(i.y - y) < 35);
+            if (iceIndex !== -1) { triggerFreeze(); gameState.iceCubes.splice(iceIndex, 1); return; }
+        }
+
+        function collectFruit(fruit) {
+            playSound('match3');
+            if (gameState.targetFruits.some(t => t.fruit === fruit.type)) {
+                gameState.collectedFruits[fruit.type] = (gameState.collectedFruits[fruit.type] || 0) + 1;
+                checkTargetCompletion();
+            }
+            gameState.moves--;
+            gameState.score += 10;
+            stats.update('fruit', 1);
+            updateUI();
+            if (gameState.moves <= 0) gameOver(false);
+        }
+
+        function triggerBomb(x, y) { 
+            playSound('bomb'); 
+            gameState.bombEffect = { x, y, radius: 20, life: 0.8 }; 
+            gameState.targetFruits.forEach(target => { 
+                gameState.collectedFruits[target.fruit] = 0; 
+            }); 
+            stats.update('bomb', 1); 
+            updateUI(); 
+        }
+        
+        function triggerFreeze() { 
+            gameState.isFrozen = true; 
+            gameState.freezeTimer = 3; 
+            playSound('match4'); 
+            stats.update('ice', 1); 
+        }
+        
+        function checkTargetCompletion() { 
+            if (gameState.targetFruits.every(target => (gameState.collectedFruits[target.fruit] || 0) >= target.count)) gameOver(true); 
+        }
+        
+        function playSound(soundName) { 
+            if (!gameState.soundEnabled) return; 
+            const sound = gameState.sounds[soundName]; 
+            if (sound && sound.play) { 
+                sound.currentTime = 0; 
+                sound.play().catch(() => {}); 
+            } 
+        }
+        
+        // ============ YILDIZ SİSTEMİ ============
+        function calculateStars() { 
+            let stars = 1;
+            let timePercent = gameState.timeLeft / gameState.maxTime;
+            let movesPercent = gameState.moves / gameState.maxMoves;
+            
+            if (timePercent > 0.3 || movesPercent > 0.3) {
+                stars = 2;
+            }
+            if (timePercent > 0.4 && movesPercent > 0.4) {
+                stars = 3;
+            }
+            if (timePercent > 0.6 && movesPercent > 0.6) {
+                stars = 3;
+            }
+            return Math.min(3, Math.max(1, stars));
+        }
+
+        function gameOver(isWin) {
+            if (gameState.isGameOverProcessing) return;
+            gameState.isGameOverProcessing = true;
+            gameState.isGameActive = false;
+            
+            if (isWin) {
+                const stars = calculateStars();
+                localStorage.setItem(`level_${gameState.currentLevel}_stars`, stars);
+                stats.update('level', 1);
+                stats.update('star', stars);
+                if (stars === 3) stats.update('perfect', 1);
+                gameState.levelCompleteCount++;
+                localStorage.setItem('levelCompleteCount', gameState.levelCompleteCount);
+                
+                // KAZANILAN LEVEL'İ KAYDET - BURASI ÖNEMLİ!
+                // Oyuncu bitirdiği level'i geçti, bir sonraki level'i oynamalı
+                if (gameState.currentLevel >= localStorage.getItem('maxLevel')) {
+                    localStorage.setItem('maxLevel', gameState.currentLevel);
+                }
+                localStorage.setItem('currentLevel', gameState.currentLevel + 1);  // BİR SONRAKİ LEVEL'E GEÇ
+                
+                if (gameState.currentLevel % 5 === 0) giveGift();
+                showLevelCompleteModal(gameState.currentLevel + 1, stars);
+                gameState.isGameOverProcessing = false;
+            } else {
+                let currentHearts = gameState.hearts;
+                if (currentHearts > 0) {
+                    currentHearts--;
+                    gameState.hearts = currentHearts;
+                    localStorage.setItem('hearts', currentHearts);
+                    if (currentHearts < gameState.maxHearts) { 
+                        gameState.heartTimer = 600; 
+                        localStorage.setItem('heartTimer', gameState.heartTimer); 
+                    }
+                }
+                stats.resetStreak();
+                updateUI();
+                if (currentHearts > 0) { 
+                    showFailedModal(); 
+                    gameState.isGameOverProcessing = false;
+                } else { 
+                    showHeartWarningModal(); 
+                    gameState.isGameOverProcessing = false;
+                }
+            }
+        }
+
+        function showFailedModal() { 
+            const modal = document.getElementById('levelFailedModal'); 
+            const remainingContainer = document.getElementById('remainingTargets'); 
+            remainingContainer.innerHTML = ''; 
+            gameState.targetFruits.forEach(target => { 
+                const collected = gameState.collectedFruits[target.fruit] || 0; 
+                if (target.count - collected > 0) { 
+                    remainingContainer.innerHTML += `<div class="remaining-item"><div>${gameState.fruitEmojis[target.fruit]}</div><span>${collected}/${target.count}</span></div>`; 
+                } 
+            }); 
+            modal.classList.add('active'); 
+            gameState.isGameActive = false; 
+        }
+        
+        function closeFailedModal() { 
+            document.getElementById('levelFailedModal').classList.remove('active'); 
+            gameState.isGameActive = true; 
+            playClickSound(); 
+        }
+        
+        function replayFailedLevel() { 
+            document.getElementById('levelFailedModal').classList.remove('active'); 
+            if (gameState.hearts <= 0) {
+                showHeartWarningModal();
+                return;
+            }
+            loadLevel(gameState.currentLevel); 
+            gameState.isGameActive = true; 
+            playClickSound(); 
+        }
+        
+        function skipFailedLevel() { 
+            if (gameState.coins >= 8) { 
+                gameState.coins -= 8; 
+                localStorage.setItem('coins', gameState.coins); 
+                gameState.currentLevel++; 
+                localStorage.setItem('currentLevel', gameState.currentLevel); 
+                document.getElementById('levelFailedModal').classList.remove('active'); 
+                loadLevel(gameState.currentLevel); 
+                gameState.isGameActive = true; 
+                updateUI(); 
+                showToast(t('level_skipped')); 
+            } else { 
+                showToast(t('insufficient_coin'), 'error'); 
+            } 
+        }
+        
+        function showLevels() { 
+            saveGameStateAndNavigate('level.html');
+        }
+        
+        function showLevelCompleteModal(nextLevel, stars) { 
+            const modal = document.getElementById('levelCompleteModal'); 
+            document.getElementById('completedLevel').innerHTML = `${t('level')} ${gameState.currentLevel} ${t('level_completed')}`; 
+            document.getElementById('earnedStars').innerHTML = '⭐'.repeat(stars) + '☆'.repeat(3 - stars); 
+            let nextConfig; 
+            try { nextConfig = getLevelConfig(nextLevel); } catch(e) { nextConfig = { targets: [{ fruit: 'apple', count: 10 }] }; } 
+            const targetsContainer = document.getElementById('nextTargets'); 
+            targetsContainer.innerHTML = ''; 
+            nextConfig.targets.forEach(target => { 
+                targetsContainer.innerHTML += `<div class="next-target-item"><div>${gameState.fruitEmojis[target.fruit]}</div><span>${target.count}</span></div>`; 
+            }); 
+            modal.classList.add('active'); 
+            playSound('match5Plus'); 
+        }
+        
+        function replayLevel() { 
+            document.getElementById('levelCompleteModal').classList.remove('active'); 
+            loadLevel(gameState.currentLevel); 
+            gameState.isGameActive = true; 
+            playClickSound(); 
+        }
+        
+        function nextLevel() { 
+            document.getElementById('levelCompleteModal').classList.remove('active'); 
+            gameState.currentLevel++; 
+            localStorage.setItem('currentLevel', gameState.currentLevel); 
+            loadLevel(gameState.currentLevel); 
+            gameState.isGameActive = true; 
+            playClickSound(); 
+        }
+        
+        function closeCompleteModal() { 
+            document.getElementById('levelCompleteModal').classList.remove('active'); 
+            gameState.isGameActive = true; 
+        }
+
+        const inviteRewards = {
+            1: { coins: 30, bonus: '' },
+            2: { coins: 50, bonus: '' },
+            3: { coins: 75, bonus: '❄️ Buz' },
+            4: { coins: 100, bonus: '➕ Hamle+5' },
+            5: { coins: 125, bonus: '❤️ +1 Kalp' }
+        };
+        
+        let inviteData = { 
+            count: parseInt(localStorage.getItem('inviteCount') || '0'), 
+            earned: parseInt(localStorage.getItem('inviteEarned') || '0'),
+            invitedIPs: JSON.parse(localStorage.getItem('invitedIPs') || '[]'),
+            refCode: localStorage.getItem('inviteRefCode') || Math.random().toString(36).substring(2, 8).toUpperCase()
+        };
+        
+        function getClientIP() {
+            let simulatedIP = localStorage.getItem('simulatedIP');
+            if (!simulatedIP) {
+                simulatedIP = '192.168.1.' + Math.floor(Math.random() * 100);
+                localStorage.setItem('simulatedIP', simulatedIP);
+            }
+            return simulatedIP;
+        }
+        
+        function isIPUsed(ip) {
+            return inviteData.invitedIPs.includes(ip);
+        }
+        
+        function addInvitedIP(ip) {
+            if (!isIPUsed(ip)) {
+                inviteData.invitedIPs.push(ip);
+                localStorage.setItem('invitedIPs', JSON.stringify(inviteData.invitedIPs));
+            }
+        }
+        
+        function addInvite(ip = null) {
+            const clientIP = ip || getClientIP();
+            if (isIPUsed(clientIP)) {
+                showToast(t('invite_ip_used'), 'error');
+                return false;
+            }
+            const nextLevel = inviteData.count + 1;
+            if (nextLevel > 5) {
+                showToast(t('invite_max'), 'success');
+                return false;
+            }
+            const reward = inviteRewards[nextLevel];
+            if (!reward) return false;
+            inviteData.count++;
+            inviteData.earned += reward.coins;
+            gameState.coins += reward.coins;
+            localStorage.setItem('coins', gameState.coins);
+            if (reward.bonus) {
+                if (reward.bonus.includes('Buz')) {
+                    gameState.giftItems.ice = (gameState.giftItems.ice || 0) + 1;
+                    localStorage.setItem('gift_ice', gameState.giftItems.ice);
+                    showToast(t('claim_success', reward.coins) + ' + ❄️');
+                } else if (reward.bonus.includes('Hamle')) {
+                    gameState.giftItems.move = (gameState.giftItems.move || 0) + 1;
+                    localStorage.setItem('gift_move', gameState.giftItems.move);
+                    showToast(t('claim_success', reward.coins) + ' + ➕');
+                } else if (reward.bonus.includes('Kalp')) {
+                    gameState.hearts = Math.min(5, gameState.hearts + 1);
+                    localStorage.setItem('hearts', gameState.hearts);
+                    showToast(t('claim_success', reward.coins) + ' + ❤️');
+                }
+            } else {
+                showToast(t('claim_success', reward.coins));
+            }
+            addInvitedIP(clientIP);
+            localStorage.setItem('inviteCount', inviteData.count);
+            localStorage.setItem('inviteEarned', inviteData.earned);
+            localStorage.setItem('inviteRefCode', inviteData.refCode);
+            updateInviteStats();
+            updateUI();
+            updateGiftCounters();
+            return true;
+        }
+        
+        function updateInviteStats() {
+            const modalInviteCount = document.getElementById('modalInviteCount');
+            const modalInviteEarned = document.getElementById('modalInviteEarned');
+            if (modalInviteCount) modalInviteCount.textContent = inviteData.count;
+            if (modalInviteEarned) modalInviteEarned.textContent = inviteData.earned + ' ' + t('coins');
+            for (let i = 1; i <= 5; i++) {
+                const rewardItem = document.getElementById(`reward${i}`);
+                if (rewardItem) {
+                    if (inviteData.count >= i) {
+                        rewardItem.classList.add('completed');
+                    } else {
+                        rewardItem.classList.remove('completed');
+                    }
+                }
+            }
+        }
+        
+        function showInviteModal() {
+            let modal = document.getElementById('inviteModal');
+            if (!modal) {
+                const modalHtml = `
+                    <div class="invite-modal" id="inviteModal">
+                        <div class="invite-card">
+                            <button class="close-modal-red" onclick="closeInviteModal()">✖</button>
+                            <h2>${t('invite_friend')}</h2>
+                            <div class="invite-link-box">
+                                <p>${t('invite_link')}</p>
+                                <div class="link-input-group">
+                                    <input type="text" id="modalInviteLink" readonly>
+                                    <button class="copy-btn" onclick="copyInviteLink()">${t('copy')}</button>
+                                </div>
+                            </div>
+                            <div class="rewards-grid">
+                                <div class="reward-item" id="reward1"><div class="count">1</div><div class="prize">${t('invite_1')}</div></div>
+                                <div class="reward-item" id="reward2"><div class="count">2</div><div class="prize">${t('invite_2')}</div></div>
+                                <div class="reward-item" id="reward3"><div class="count">3</div><div class="prize">${t('invite_3')}</div></div>
+                                <div class="reward-item" id="reward4"><div class="count">4</div><div class="prize">${t('invite_4')}</div></div>
+                                <div class="reward-item" id="reward5"><div class="count">5</div><div class="prize">${t('invite_5')}</div></div>
+                            </div>
+                            <div class="stats-box">
+                                <div class="stats-row"><span>${t('invite_count')}</span><span id="modalInviteCount">0</span></div>
+                                <div class="stats-row"><span>${t('invite_earned')}</span><span id="modalInviteEarned">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+            }
+            modal = document.getElementById('inviteModal');
+            const link = `https://fruitcombine.com/ref/${inviteData.refCode}`;
+            const modalLink = document.getElementById('modalInviteLink');
+            if (modalLink) modalLink.value = link;
+            updateInviteStats();
+            modal.classList.add('active');
+            gameState.isGameActive = false;
+        }
+        
+        function closeInviteModal() {
+            const modal = document.getElementById('inviteModal');
+            if (modal) modal.classList.remove('active');
+            gameState.isGameActive = true;
+        }
+        
+        function copyInviteLink() {
+            const linkInput = document.getElementById('inviteLink') || document.getElementById('modalInviteLink');
+            if (linkInput) {
+                linkInput.select();
+                document.execCommand('copy');
+                showToast(t('copy_success'));
+            }
+        }
+        
+        window.addInvite = addInvite;
+
+        const stats = {
+            totalLevels: parseInt(localStorage.getItem('stat_totalLevels') || '0'),
+            totalFruits: parseInt(localStorage.getItem('stat_totalFruits') || '0'),
+            totalStars: parseInt(localStorage.getItem('stat_totalStars') || '0'),
+            totalBombs: parseInt(localStorage.getItem('stat_totalBombs') || '0'),
+            totalIce: parseInt(localStorage.getItem('stat_totalIce') || '0'),
+            bestStreak: parseInt(localStorage.getItem('stat_bestStreak') || '0'),
+            perfectLevels: parseInt(localStorage.getItem('stat_perfectLevels') || '0'),
+            totalTimePlayed: parseInt(localStorage.getItem('stat_totalTimePlayed') || '0'),
+            currentStreak: 0,
+            update: function(type, value = 1) {
+                if (type === 'level') { this.totalLevels += value; localStorage.setItem('stat_totalLevels', this.totalLevels); this.updateStreak(); }
+                else if (type === 'fruit') { this.totalFruits += value; localStorage.setItem('stat_totalFruits', this.totalFruits); }
+                else if (type === 'star') { this.totalStars += value; localStorage.setItem('stat_totalStars', this.totalStars); }
+                else if (type === 'bomb') { this.totalBombs += value; localStorage.setItem('stat_totalBombs', this.totalBombs); }
+                else if (type === 'ice') { this.totalIce += value; localStorage.setItem('stat_totalIce', this.totalIce); }
+                else if (type === 'perfect') { this.perfectLevels += value; localStorage.setItem('stat_perfectLevels', this.perfectLevels); }
+                else if (type === 'time') { this.totalTimePlayed += value; localStorage.setItem('stat_totalTimePlayed', this.totalTimePlayed); }
+            },
+            updateStreak: function() { this.currentStreak++; if (this.currentStreak > this.bestStreak) { this.bestStreak = this.currentStreak; localStorage.setItem('stat_bestStreak', this.bestStreak); } },
+            resetStreak: function() { this.currentStreak = 0; },
+            formatTime: function(seconds) { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return mins > 0 ? `${mins}d ${secs}s` : `${secs}s`; },
+            showStatsModal: function() {
+                document.getElementById('statLevels').textContent = this.totalLevels;
+                document.getElementById('statFruits').textContent = this.totalFruits;
+                document.getElementById('statStars').textContent = this.totalStars;
+                document.getElementById('statBombs').textContent = this.totalBombs;
+                document.getElementById('statIce').textContent = this.totalIce;
+                document.getElementById('statStreak').textContent = this.bestStreak;
+                document.getElementById('statPerfect').textContent = this.perfectLevels;
+                document.getElementById('statTime').textContent = this.formatTime(this.totalTimePlayed);
+                document.getElementById('statsModal').classList.add('active');
+                gameState.isGameActive = false;
+            },
+            closeStatsModal: function() { 
+                document.getElementById('statsModal').classList.remove('active'); 
+                gameState.isGameActive = true; 
+            }
+        };
+
+        const dailyRewards = {
+            lastClaimDay: parseInt(localStorage.getItem('dailyRewardDay') || '0'),
+            currentStreak: parseInt(localStorage.getItem('dailyStreak') || '0'),
+            rewards: [{ day: 1, coins: 10, items: [] }, { day: 2, coins: 15, items: ['ice'] }, { day: 3, coins: 20, items: [] }, { day: 4, coins: 25, items: ['move'] }, { day: 5, coins: 30, items: [] }, { day: 6, coins: 35, items: ['time'] }, { day: 7, coins: 50, items: ['ice', 'move', 'heart'] }],
+            canClaim: function() { const last = new Date(this.lastClaimDay); const now = new Date(); if (this.lastClaimDay === 0) return true; return last.getDate() !== now.getDate() || last.getMonth() !== now.getMonth() || last.getFullYear() !== now.getFullYear(); },
+            claim: function() { if (!this.canClaim()) return false; const now = new Date(); this.lastClaimDay = now.getTime(); this.currentStreak = (this.currentStreak % 7) + 1; localStorage.setItem('dailyRewardDay', this.lastClaimDay); localStorage.setItem('dailyStreak', this.currentStreak); return this.currentStreak; }
+        };
+
+        function showDailyRewardModal() {
+            const streak = dailyRewards.currentStreak || 1;
+            const reward = dailyRewards.rewards[streak - 1];
+            document.getElementById('rewardCoins').textContent = reward.coins;
+            let extraHtml = '';
+            reward.items.forEach(item => { if (item === 'ice') extraHtml += '❄️ Buz '; if (item === 'move') extraHtml += '➕ Hamle+5 '; if (item === 'time') extraHtml += '⏰ Süre+10 '; if (item === 'heart') extraHtml += '❤️ Kalp '; });
+            document.getElementById('rewardExtra').innerHTML = extraHtml || '-';
+            for (let i = 1; i <= 7; i++) { const dayBox = document.getElementById(`day${i}`); if (dayBox) { if (i < streak) dayBox.className = 'day-box completed'; else if (i === streak) dayBox.className = 'day-box active'; else dayBox.className = 'day-box'; } }
+            document.getElementById('dailyRewardModal').classList.add('active');
+            gameState.isGameActive = false;
+        }
+        
+        function closeDailyReward() { document.getElementById('dailyRewardModal').classList.remove('active'); gameState.isGameActive = true; }
+        
+        function claimDailyReward() {
+            const day = dailyRewards.claim();
+            if (!day) { showToast(t('already_claimed'), 'error'); return; }
+            const reward = dailyRewards.rewards[day - 1];
+            gameState.coins += reward.coins;
+            localStorage.setItem('coins', gameState.coins);
+            reward.items.forEach(item => {
+                if (item === 'ice') { gameState.giftItems.ice = (gameState.giftItems.ice || 0) + 1; localStorage.setItem('gift_ice', gameState.giftItems.ice); }
+                if (item === 'move') { gameState.giftItems.move = (gameState.giftItems.move || 0) + 1; localStorage.setItem('gift_move', gameState.giftItems.move); }
+                if (item === 'time') { gameState.giftItems.time = (gameState.giftItems.time || 0) + 1; localStorage.setItem('gift_time', gameState.giftItems.time); }
+                if (item === 'heart') { gameState.hearts = Math.min(5, gameState.hearts + 1); localStorage.setItem('hearts', gameState.hearts); }
+            });
+            updateUI();
+            updateGiftCounters();
+            closeDailyReward();
+            showToast(t('claim_success', reward.coins));
+        }
+
+        function showNotification(message) { const n = document.createElement('div'); n.className = 'notification'; n.textContent = message; document.body.appendChild(n); setTimeout(() => n.remove(), 3000); }
+        function loadGiftCounters() { gameState.giftItems.ice = parseInt(localStorage.getItem('gift_ice') || '0'); gameState.giftItems.move = parseInt(localStorage.getItem('gift_move') || '0'); gameState.giftItems.time = parseInt(localStorage.getItem('gift_time') || '0'); updateGiftCounters(); }
+        function updateGiftCounters() { const ice = document.getElementById('iceCount'); if (gameState.giftItems.ice > 0) { ice.style.display = 'flex'; ice.textContent = gameState.giftItems.ice; } else { ice.style.display = 'none'; } const move = document.getElementById('moveCount'); if (gameState.giftItems.move > 0) { move.style.display = 'flex'; move.textContent = gameState.giftItems.move; } else { move.style.display = 'none'; } const time = document.getElementById('timeCount'); if (gameState.giftItems.time > 0) { time.style.display = 'flex'; time.textContent = gameState.giftItems.time; } else { time.style.display = 'none'; } }
+        function giveGift() { const gifts = ['ice', 'move', 'time']; const random = gifts[Math.floor(Math.random() * gifts.length)]; gameState.giftItems[random]++; localStorage.setItem(`gift_${random}`, gameState.giftItems[random]); updateGiftCounters(); const names = { ice: t('ice'), move: t('extra_move'), time: t('extra_time') }; showToast(`🎁 ${t('gift')}: ${names[random]}!`); const box = document.getElementById('giftBox'); box.style.display = 'block'; setTimeout(() => box.style.display = 'none', 3000); }
+        function useGift(type) { if (gameState.giftItems[type] > 0) { gameState.giftItems[type]--; localStorage.setItem(`gift_${type}`, gameState.giftItems[type]); if (type === 'ice') triggerFreeze(); else if (type === 'move') gameState.moves += 5; else if (type === 'time') gameState.timeLeft += 10; updateGiftCounters(); updateUI(); playClickSound(); return true; } return false; }
+
+        function showToast(message, type = 'success') { const toast = document.createElement('div'); toast.className = `toast-message ${type === 'error' ? 'error' : ''}`; toast.textContent = message; document.body.appendChild(toast); setTimeout(() => toast.remove(), 2000); }
+        function playClickSound() { if (gameState.soundEnabled && gameState.sounds.click) { gameState.sounds.click.currentTime = 0; gameState.sounds.click.play().catch(() => {}); } }
+        function buyIce() { if (useGift('ice')) return; if (gameState.coins >= 5) { gameState.coins -= 5; triggerFreeze(); updateUI(); playClickSound(); } else { showToast(t('insufficient_coin'), 'error'); } }
+        function buyExtraMoves() { if (useGift('move')) return; if (gameState.coins >= 5) { gameState.coins -= 5; gameState.moves += 5; updateUI(); playClickSound(); } else { showToast(t('insufficient_coin'), 'error'); } }
+        function buyExtraTime() { if (useGift('time')) return; if (gameState.coins >= 5) { gameState.coins -= 5; gameState.timeLeft += 10; updateUI(); playClickSound(); } else { showToast(t('insufficient_coin'), 'error'); } }
+        
+        function showInfoModal(level) { 
+            const modal = document.getElementById('infoModal'); 
+            if (level === 1) { 
+                document.getElementById('infoTitle').innerHTML = t('how_to_play'); 
+                document.getElementById('infoText').innerHTML = t('how_to_play_text'); 
+                document.getElementById('targetExample').innerHTML = '5 🍎'; 
+                document.getElementById('infoDesc').innerHTML = t('how_to_play_desc'); 
+            } else if (level === 2) { 
+                document.getElementById('infoTitle').innerHTML = t('new_fruits_title'); 
+                document.getElementById('infoText').innerHTML = t('new_fruits_text'); 
+                document.getElementById('targetExample').innerHTML = '6 🍓'; 
+                document.getElementById('infoDesc').innerHTML = t('new_fruits_desc'); 
+            } 
+            modal.classList.add('active'); 
+            gameState.isGameActive = false; 
+        }
+        
+        function closeInfoModal() { 
+            document.getElementById('infoModal').classList.remove('active'); 
+            gameState.isGameActive = true; 
+            playClickSound(); 
+            if (gameState.currentLevel === 1) { 
+                localStorage.setItem('info_shown_level1', 'true'); 
+                gameState.infoShown.level1 = true; 
+            } else if (gameState.currentLevel === 2) { 
+                localStorage.setItem('info_shown_level2', 'true'); 
+                gameState.infoShown.level2 = true; 
+            } 
+        }
+
+        function calculateBackgroundTime() { 
+            const now = Date.now(); 
+            const elapsed = Math.floor((now - gameState.lastHeartUpdate) / 1000); 
+            if (elapsed > 0 && gameState.hearts < gameState.maxHearts) { 
+                gameState.heartTimer -= elapsed; 
+                while (gameState.heartTimer <= 0 && gameState.hearts < gameState.maxHearts) { 
+                    gameState.hearts++; 
+                    gameState.heartTimer += 600; 
+                } 
+                if (gameState.hearts >= gameState.maxHearts) gameState.heartTimer = 600; 
+                localStorage.setItem('hearts', gameState.hearts); 
+                localStorage.setItem('heartTimer', gameState.heartTimer); 
+            } 
+            gameState.lastHeartUpdate = now; 
+            localStorage.setItem('lastHeartUpdate', now); 
+        }
+        
+        window.addEventListener('beforeunload', () => { 
+            localStorage.setItem('heartTimer', gameState.heartTimer); 
+            localStorage.setItem('lastHeartUpdate', Date.now());
+            if (gameState.isGameActive && !gameState.isGameOverProcessing) {
+                // OYUN DURUMUNU KAYDET
+                const savedState = {
+                    currentLevel: gameState.currentLevel,
+                    moves: gameState.moves,
+                    maxMoves: gameState.maxMoves,
+                    timeLeft: gameState.timeLeft,
+                    maxTime: gameState.maxTime,
+                    score: gameState.score,
+                    targetFruits: gameState.targetFruits,
+                    collectedFruits: gameState.collectedFruits,
+                    fruits: gameState.fruits,
+                    bombs: gameState.bombs,
+                    iceCubes: gameState.iceCubes,
+                    isFrozen: gameState.isFrozen,
+                    freezeTimer: gameState.freezeTimer,
+                    isGameActive: gameState.isGameActive,
+                    fruitSpeed: gameState.fruitSpeed
+                };
+                localStorage.setItem('savedGameState', JSON.stringify(savedState));
+                localStorage.setItem('isGameSaved', 'true');
+            }
+        });
+        
+        document.addEventListener('visibilitychange', () => { 
+            if (document.hidden) { 
+                localStorage.setItem('heartTimer', gameState.heartTimer); 
+                localStorage.setItem('lastHeartUpdate', Date.now());
+                if (gameState.isGameActive && !gameState.isGameOverProcessing && !isGamePaused) {
+                    const savedState = {
+                        currentLevel: gameState.currentLevel,
+                        moves: gameState.moves,
+                        maxMoves: gameState.maxMoves,
+                        timeLeft: gameState.timeLeft,
+                        maxTime: gameState.maxTime,
+                        score: gameState.score,
+                        targetFruits: gameState.targetFruits,
+                        collectedFruits: gameState.collectedFruits,
+                        fruits: gameState.fruits,
+                        bombs: gameState.bombs,
+                        iceCubes: gameState.iceCubes,
+                        isFrozen: gameState.isFrozen,
+                        freezeTimer: gameState.freezeTimer,
+                        isGameActive: gameState.isGameActive,
+                        fruitSpeed: gameState.fruitSpeed
+                    };
+                    localStorage.setItem('savedGameState', JSON.stringify(savedState));
+                    localStorage.setItem('isGameSaved', 'true');
+                }
+            } else { 
+                calculateBackgroundTime(); 
+                updateUI();
+                const isSaved = localStorage.getItem('isGameSaved') === 'true';
+                if (isSaved && !gameState.isGameActive && !gameState.isGameOverProcessing) {
+                    loadSavedGameIfExists();
+                }
+            } 
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initGame();
+            loadSettings();
+            loadGiftCounters();
+            
+            let savedLevel = localStorage.getItem('currentLevel') || '1';
+            const savedMaxLevel = localStorage.getItem('maxLevel') || '1';
+            
+            // OYUNCEVAP: Oyuncunun en son hangi level'i bitirdiğini kontrol et
+            // Eğer savedLevel, maxLevel'den büyükse maxLevel'i kullan
+            let maxLevelReached = parseInt(savedMaxLevel);
+            let currentLevelFromStorage = parseInt(savedLevel);
+            
+            // Normalde currentLevel, bir sonraki oynanacak level'i gösterir
+            // Ama eğer oyuncu level atlamışsa, maxLevel kontrolü yap
+            if (currentLevelFromStorage > maxLevelReached + 1) {
+                currentLevelFromStorage = maxLevelReached + 1;
+                localStorage.setItem('currentLevel', currentLevelFromStorage);
+            }
+            
+            gameState.currentLevel = currentLevelFromStorage;
+            
+            const savedCoins = localStorage.getItem('coins') || '20';  // 20 JETON BAŞLANGIÇ
+            const savedHearts = localStorage.getItem('hearts') || '5';
+            const savedHeartTimer = localStorage.getItem('heartTimer') || '600';
+            const savedLastUpdate = localStorage.getItem('lastHeartUpdate') || Date.now();
+            
+            gameState.coins = parseInt(savedCoins);
+            gameState.hearts = parseInt(savedHearts);
+            gameState.heartTimer = parseInt(savedHeartTimer);
+            gameState.lastHeartUpdate = parseInt(savedLastUpdate);
+            gameState.levelCompleteCount = parseInt(localStorage.getItem('levelCompleteCount') || '0');
+            
+            gameState.infoShown.level1 = localStorage.getItem('info_shown_level1') === 'true';
+            gameState.infoShown.level2 = localStorage.getItem('info_shown_level2') === 'true';
+            
+            calculateBackgroundTime();
+            
+            // KAYDEDİLMİŞ OYUN VAR MI KONTROL ET
+            const hasSavedGame = loadSavedGameIfExists();
+            
+            if (!hasSavedGame) {
+                if (gameState.hearts <= 0) { 
+                    showHeartWarningModal(); 
+                    gameState.isGameActive = false; 
+                } else { 
+                    loadLevel(gameState.currentLevel); 
+                    startHeartTimer(); 
+                }
+            } else {
+                if (gameState.hearts <= 0) { 
+                    showHeartWarningModal(); 
+                } else {
+                    startHeartTimer();
+                }
+                gameState.isGameActive = true;
+            }
+            
+            if (dailyRewards.canClaim()) setTimeout(() => showDailyRewardModal(), 1000);
+            
+            setTimeout(() => { if (gameState.musicEnabled && gameState.sounds.background) { gameState.sounds.background.play().catch(e => console.log('Ses başlatılamadı', e)); } }, 500);
+            
+            updateAllGameTexts();
+        });
+    </script>
+    
+    <audio id="backgroundMusic" loop preload="auto"><source src="assets/audio/background.mp3" type="audio/mpeg"></audio>
+    <audio id="clickSound" preload="auto"><source src="assets/audio/click-sound.mp3" type="audio/mpeg"></audio>
+    <audio id="match3Sound" preload="auto"><source src="assets/audio/match-3.mp3" type="audio/mpeg"></audio>
+    <audio id="match4Sound" preload="auto"><source src="assets/audio/match-4.mp3" type="audio/mpeg"></audio>
+    <audio id="match5PlusSound" preload="auto"><source src="assets/audio/match-5-plus.mp3" type="audio/mpeg"></audio>
+    <audio id="bombSound" preload="auto"><source src="assets/audio/bomb.mp3" type="audio/mpeg"></audio>
+</body>
+</html>

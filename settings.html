@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<script src="js/translations.js"></script>
+<script>
+    function applyLanguageToSettings() {
+        const currentLang = localStorage.getItem('language') || getSystemLanguage();
+        if (currentLang === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+        }
+        
+        const elements = {
+            settingsTitle: 'settings',
+            backText: 'back',
+            languageSelectTitle: 'language_select',
+            gameLanguageLabel: 'game_language',
+            soundSettingsTitle: 'sound_settings',
+            musicLabel: 'music',
+            soundEffectsLabel: 'sound_effects',
+            gameSettingsTitle: 'game_settings',
+            skipBtnText: 'skip_level',
+            vibrationLabel: 'vibration',
+            difficultyLabel: 'difficulty',
+            normalText: 'normal',
+            aboutTitle: 'about',
+            supportTitle: 'support',
+            faqTitle: 'faq',
+            faqDesc: 'faq',
+            contactTitle: 'contact',
+            contactDesc: 'contact',
+            suggestionTitle: 'suggestion',
+            suggestionDesc: 'suggestion',
+            bugTitle: 'bug_report',
+            bugDesc: 'bug_report',
+            rateTitle: 'rate_game',
+            rateDesc: 'rate_game',
+            gameInfoTitle: 'game_info',
+            versionLabel: 'version',
+            totalLevelsLabel: 'total_levels',
+            developerLabel: 'developer',
+            sendEmailBtn: 'send',
+            cancelBtn: 'cancel',
+            faqCloseBtn: 'close'
+        };
+        
+        for (const [id, key] of Object.entries(elements)) {
+            const el = document.getElementById(id);
+            if (el) {
+                if (typeof key === 'function') {
+                    el.innerHTML = key();
+                } else {
+                    el.innerHTML = t(key);
+                }
+            }
+        }
+        
+        const skipLevelLabel = document.getElementById('skipLevelLabel');
+        if (skipLevelLabel) {
+            skipLevelLabel.innerHTML = t('skip_level') + ' (8 ' + t('coins') + ')';
+        }
+        
+        const gameDevText = document.getElementById('gameDevText');
+        if (gameDevText) {
+            gameDevText.innerHTML = '🎮 ' + t('developer');
+        }
+        
+        const formTitle = document.getElementById('formTitle');
+        if (formTitle) formTitle.innerHTML = '💡 ' + t('suggestion');
+        
+        const userName = document.getElementById('userName');
+        if (userName) userName.placeholder = t('your_name');
+        
+        const userEmail = document.getElementById('userEmail');
+        if (userEmail) userEmail.placeholder = t('your_email');
+        
+        const userMessage = document.getElementById('userMessage');
+        if (userMessage) userMessage.placeholder = t('message');
+        
+        const faqModalTitle = document.getElementById('faqModalTitle');
+        if (faqModalTitle) faqModalTitle.innerHTML = '❓ ' + t('faq_title');
+        
+        const faq1_q = document.getElementById('faq1_q');
+        if (faq1_q) faq1_q.innerHTML = t('faq1_q');
+        const faq1_a = document.getElementById('faq1_a');
+        if (faq1_a) faq1_a.innerHTML = t('faq1_a');
+        
+        const faq2_q = document.getElementById('faq2_q');
+        if (faq2_q) faq2_q.innerHTML = t('faq2_q');
+        const faq2_a = document.getElementById('faq2_a');
+        if (faq2_a) faq2_a.innerHTML = t('faq2_a');
+        
+        const faq3_q = document.getElementById('faq3_q');
+        if (faq3_q) faq3_q.innerHTML = t('faq3_q');
+        const faq3_a = document.getElementById('faq3_a');
+        if (faq3_a) faq3_a.innerHTML = t('faq3_a');
+        
+        const faq4_q = document.getElementById('faq4_q');
+        if (faq4_q) faq4_q.innerHTML = t('faq4_q');
+        const faq4_a = document.getElementById('faq4_a');
+        if (faq4_a) faq4_a.innerHTML = t('faq4_a');
+        
+        const faq5_q = document.getElementById('faq5_q');
+        if (faq5_q) faq5_q.innerHTML = t('faq5_q');
+        const faq5_a = document.getElementById('faq5_a');
+        if (faq5_a) faq5_a.innerHTML = t('faq5_a');
+        
+        const faq6_q = document.getElementById('faq6_q');
+        if (faq6_q) faq6_q.innerHTML = t('faq6_q');
+        const faq6_a = document.getElementById('faq6_a');
+        if (faq6_a) faq6_a.innerHTML = t('faq6_a');
+    }
+    
+    document.addEventListener('DOMContentLoaded', applyLanguageToSettings);
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fruit Combine - Ayarlar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .settings-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 800px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            color: white;
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        .settings-header h1 {
+            font-size: 24px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .placeholder {
+            width: 60px;
+        }
+        
+        .settings-section {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(5px);
+        }
+        
+        .section-title {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+        
+        .setting-label {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 26px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255,255,255,0.3);
+            transition: .3s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .skip-level-btn {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            border: none;
+            color: white;
+            font-weight: bold;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 3px 0 #C94F4F;
+            font-size: 14px;
+        }
+        
+        .skip-level-btn:active {
+            transform: translateY(3px);
+            box-shadow: none;
+        }
+        
+        .about-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            color: white;
+            margin-top: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .about-card h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+        
+        .about-card .email {
+            color: #FFD700;
+            font-weight: bold;
+            margin-top: 10px;
+            padding: 5px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .version {
+            margin-top: 15px;
+            font-size: 14px;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 10px;
+        }
+        
+        .support-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .support-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .support-item:last-child {
+            border-bottom: none;
+        }
+        
+        .support-item:active {
+            background: rgba(255,255,255,0.1);
+            transform: scale(0.98);
+        }
+        
+        .support-icon {
+            width: 45px;
+            height: 45px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .support-info {
+            flex: 1;
+        }
+        
+        .support-title {
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 3px;
+        }
+        
+        .support-desc {
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+        
+        .support-arrow {
+            color: rgba(255,255,255,0.5);
+            font-size: 20px;
+        }
+        
+        .form-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100000;
+        }
+        
+        .form-modal.active {
+            display: flex;
+        }
+        
+        .form-card {
+            width: 90%;
+            max-width: 350px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 30px;
+            padding: 25px;
+            color: white;
+            text-align: center;
+            animation: modalPop 0.3s ease;
+            border: 3px solid #FFD700;
+        }
+        
+        @keyframes modalPop {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .form-card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        .form-card input, .form-card textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        
+        .form-card textarea {
+            height: 100px;
+            resize: none;
+        }
+        
+        .form-card input::placeholder, .form-card textarea::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .form-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .form-btn.send {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .form-btn.cancel {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .form-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast-message {
+            position: fixed;
+            bottom: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 100000;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .toast-message.error {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .custom-select {
+            position: relative;
+            width: 100%;
+            margin-top: 8px;
+            cursor: pointer;
+        }
+        
+        .selected-lang {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.2s;
+        }
+        
+        .selected-lang:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        
+        .dropdown-arrow {
+            font-size: 12px;
+        }
+        
+        .global-dropdown {
+            position: fixed;
+            background: #1a1a2e;
+            border-radius: 12px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 999999;
+            border: 2px solid #FFD700;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: auto;
+            min-width: 200px;
+        }
+        
+        .global-dropdown .lang-option {
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: background 0.2s;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .global-dropdown .lang-option:last-child {
+            border-bottom: none;
+        }
+        
+        .global-dropdown .lang-option:hover {
+            background: rgba(255,215,0,0.2);
+        }
+        
+        .global-dropdown .lang-flag {
+            font-size: 20px;
+        }
+        
+        .global-dropdown .lang-name {
+            font-size: 14px;
+            color: white;
+        }
+        
+        [dir="rtl"] .global-dropdown .lang-option {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .settings-section,
+        [dir="rtl"] .setting-item,
+        [dir="rtl"] .about-card,
+        [dir="rtl"] .support-card {
+            direction: rtl;
+            text-align: right;
+        }
+        
+        [dir="rtl"] .section-title {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .support-item {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .back-btn {
+            transform: scaleX(-1);
+        }
+        
+        [dir="rtl"] .selected-lang {
+            flex-direction: row-reverse;
+        }
+    </style>
+    <script src="js/translations.js"></script>
+</head>
+<body>
+    <div class="settings-container">
+        <div class="settings-header">
+            <button class="back-btn" onclick="window.location.href='game.html'">← <span id="backText">Geri</span></button>
+            <h1 id="settingsTitle">AYARLAR</h1>
+            <div class="placeholder"></div>
+        </div>
+        
+        <!-- DİL AYARLARI -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="languageSelectTitle">DİL SEÇİN</span></div>
+            <div class="setting-item" style="flex-direction: column; align-items: stretch;">
+                <span class="setting-label" id="gameLanguageLabel">Oyun Dili</span>
+                <div class="custom-select" id="customSelect">
+                    <div class="selected-lang" id="selectedLangDisplay">
+                        <span id="selectedFlag">🇹🇷</span> <span id="selectedLangName">Türkçe</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SES AYARLARI -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="soundSettingsTitle">SES AYARLARI</span></div>
+            <div class="setting-item">
+                <span class="setting-label" id="musicLabel">Arka Plan Müziği</span>
+                <label class="switch"><input type="checkbox" id="musicToggle" onchange="toggleMusic()"><span class="slider round"></span></label>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" id="soundEffectsLabel">Ses Efektleri</span>
+                <label class="switch"><input type="checkbox" id="soundToggle" onchange="toggleSound()"><span class="slider round"></span></label>
+            </div>
+        </div>
+        
+        <!-- OYUN AYARLARI -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="gameSettingsTitle">OYUN AYARLARI</span></div>
+            <div class="setting-item">
+                <span class="setting-label" id="skipLevelLabel">Seviye Atla (8 Jeton)</span>
+                <button class="skip-level-btn" onclick="skipLevel()">▶️ <span id="skipBtnText">ATLA</span></button>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" id="vibrationLabel">Titreşim</span>
+                <label class="switch"><input type="checkbox" id="vibrationToggle" checked><span class="slider round"></span></label>
+            </div>
+            <div class="setting-item">
+                <span class="setting-label" id="difficultyLabel">Zorluk Seviyesi</span>
+                <span style="color:#4CAF50;" id="normalText">Normal</span>
+            </div>
+        </div>
+        
+        <!-- HAKKIMIZDA -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="aboutTitle">HAKKIMIZDA</span></div>
+            <div class="about-card">
+                <h3>Hasanlılar Team</h3>
+                <p id="gameDevText">🎮 Oyun Geliştirici</p>
+                <p>🍎 Fruit Combine v1.0</p>
+                <div class="email">📧 hasanlilarteam@gmail.com</div>
+                
+            </div>
+        </div>
+        
+        <!-- DESTEK & YARDIM -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="supportTitle">DESTEK & YARDIM</span></div>
+            <div class="support-card">
+                <div class="support-item" onclick="openSupport('faq')">
+                    <div class="support-icon">❓</div>
+                    <div class="support-info">
+                        <div class="support-title" id="faqTitle">Sık Sorulan Sorular</div>
+                        <div class="support-desc" id="faqDesc">Oyun hakkında merak edilenler</div>
+                    </div>
+                    <div class="support-arrow">→</div>
+                </div>
+                <div class="support-item" onclick="openSupport('contact')">
+                    <div class="support-icon">📧</div>
+                    <div class="support-info">
+                        <div class="support-title" id="contactTitle">İletişim</div>
+                        <div class="support-desc" id="contactDesc">Bize ulaşın, sorunlarınızı bildirin</div>
+                    </div>
+                    <div class="support-arrow">→</div>
+                </div>
+                <div class="support-item" onclick="openSupport('suggestion')">
+                    <div class="support-icon">💡</div>
+                    <div class="support-info">
+                        <div class="support-title" id="suggestionTitle">Öneri & Teklifler</div>
+                        <div class="support-desc" id="suggestionDesc">Oyunu geliştirmek için fikirleriniz</div>
+                    </div>
+                    <div class="support-arrow">→</div>
+                </div>
+                <div class="support-item" onclick="openSupport('bug')">
+                    <div class="support-icon">🐛</div>
+                    <div class="support-info">
+                        <div class="support-title" id="bugTitle">Hata Bildir</div>
+                        <div class="support-desc" id="bugDesc">Karşılaştığınız sorunları bildirin</div>
+                    </div>
+                    <div class="support-arrow">→</div>
+                </div>
+                <div class="support-item" onclick="openSupport('rate')">
+                    <div class="support-icon">⭐</div>
+                    <div class="support-info">
+                        <div class="support-title" id="rateTitle">Oyunu Değerlendir</div>
+                        <div class="support-desc" id="rateDesc">5 yıldız bizi mutlu eder!</div>
+                    </div>
+                    <div class="support-arrow">→</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- OYUN BİLGİSİ -->
+        <div class="settings-section">
+            <div class="section-title"><span></span> <span id="gameInfoTitle">OYUN BİLGİSİ</span></div>
+            <div class="setting-item"><span class="setting-label" id="versionLabel">Sürüm</span><span style="color:#4CAF50;">1.0.0</span></div>
+            <div class="setting-item"><span class="setting-label" id="totalLevelsLabel">Toplam Seviye</span><span style="color:#FFD700;">1000+</span></div>
+            <div class="setting-item"><span class="setting-label" id="developerLabel">Geliştirici</span><span style="color:#fff;">Hasanlılar Team</span></div>
+        </div>
+    </div>
+    
+    <div class="form-modal" id="formModal">
+        <div class="form-card">
+            <h2 id="formTitle">💡 Öneri Gönder</h2>
+            <div>
+                <input type="text" id="userName" placeholder="Adınız" required>
+                <input type="email" id="userEmail" placeholder="E-posta adresiniz (cevap için)" required>
+                <input type="text" id="userSubject" placeholder="Konu" value="Fruit Combine - İletişim">
+                <textarea id="userMessage" placeholder="Mesajınızı yazın..." required rows="4"></textarea>
+            </div>
+            <div class="form-buttons">
+                <button class="form-btn send" id="sendEmailBtn">Gönder</button>
+                <button class="form-btn cancel" onclick="closeFormModal()" id="cancelBtn">İptal</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-modal" id="faqModal">
+        <div class="form-card">
+            <h2 id="faqModalTitle">❓ Sık Sorulan Sorular</h2>
+            <div style="text-align: left; margin: 15px 0; max-height: 400px; overflow-y: auto;">
+                <div style="margin-bottom: 15px;"><strong id="faq1_q" style="color:#FFD700;">🎮 Nasıl oynanır?</strong><p id="faq1_a">Hedef meyveleri toplayarak level'ı tamamlayın. Meyvelere tıklayın, hedefe ulaşın!</p></div>
+                <div style="margin-bottom: 15px;"><strong id="faq2_q" style="color:#FFD700;">❤️ Kalp nasıl kazanılır?</strong><p id="faq2_a">Her level kaybettiğinizde 1 kalp düşer. Kalpler 10 dakikada bir yenilenir. Market'ten de satın alabilirsiniz.</p></div>
+                <div style="margin-bottom: 15px;"><strong id="faq3_q" style="color:#FFD700;">🪙 Jeton nasıl kazanılır?</strong><p id="faq3_a">Level geçtikçe, günlük ödüllerle, arkadaş davet ederek veya marketten satın alarak jeton kazanabilirsiniz.</p></div>
+                <div style="margin-bottom: 15px;"><strong id="faq4_q" style="color:#FFD700;">🎁 Hediyeler nerede?</strong><p id="faq4_a">Her 5 level'da bir hediye kazanırsınız. Günlük ödüller de var!</p></div>
+                <div style="margin-bottom: 15px;"><strong id="faq5_q" style="color:#FFD700;">📊 İstatistikler nerede?</strong><p id="faq5_a">Oyun ekranında 📊 ikonuna tıklayarak istatistiklerinizi görebilirsiniz.</p></div>
+                <div><strong id="faq6_q" style="color:#FFD700;">👥 Arkadaş davet nasıl yapılır?</strong><p id="faq6_a">Oyun ekranındaki 👥 ikonuna tıklayarak davet linkinizi paylaşabilirsiniz.</p></div>
+            </div>
+            <button class="form-btn send" onclick="closeFaqModal()" id="faqCloseBtn">Kapat</button>
+        </div>
+    </div>
+    
+    <audio id="clickSound"><source src="assets/audio/click-sound.mp3" type="audio/mpeg"></audio>
+    <audio id="backgroundMusic" loop><source src="assets/audio/background.mp3" type="audio/mpeg"></audio>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init({
+                publicKey: "pUkm_8DInS42aOAkm",
+            });
+        })();
+        
+        let currentType = '';
+        let globalDropdown = null;
+        
+        const langList = [
+            { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
+            { code: 'en', name: 'English', flag: '🇬🇧' },
+            { code: 'az', name: 'Azərbaycanca', flag: '🇦🇿' },
+            { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+            { code: 'es', name: 'Español', flag: '🇪🇸' },
+            { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+            { code: 'fr', name: 'Français', flag: '🇫🇷' },
+            { code: 'pt', name: 'Português', flag: '🇵🇹' },
+            { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+            { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+            { code: 'zh', name: '中文', flag: '🇨🇳' },
+            { code: 'ja', name: '日本語', flag: '🇯🇵' },
+            { code: 'ko', name: '한국어', flag: '🇰🇷' },
+            { code: 'hi', name: 'हिन्दी', flag: '🇮🇳' },
+            { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' }
+        ];
+        
+        function toggleLanguageDropdown(event) {
+            event.stopPropagation();
+            if (globalDropdown) {
+                globalDropdown.remove();
+                globalDropdown = null;
+                return;
+            }
+            const target = event.currentTarget;
+            const rect = target.getBoundingClientRect();
+            globalDropdown = document.createElement('div');
+            globalDropdown.className = 'global-dropdown';
+            globalDropdown.style.top = (rect.bottom + 5) + 'px';
+            globalDropdown.style.left = rect.left + 'px';
+            globalDropdown.style.width = rect.width + 'px';
+            langList.forEach(lang => {
+                const option = document.createElement('div');
+                option.className = 'lang-option';
+                option.innerHTML = `<span class="lang-flag">${lang.flag}</span> <span class="lang-name">${lang.name}</span>`;
+                option.onclick = (e) => {
+                    e.stopPropagation();
+                    selectLanguage(lang.code);
+                };
+                globalDropdown.appendChild(option);
+            });
+            document.body.appendChild(globalDropdown);
+        }
+        
+        document.addEventListener('click', function(event) {
+            if (globalDropdown && !globalDropdown.contains(event.target) && !event.target.closest('.custom-select')) {
+                globalDropdown.remove();
+                globalDropdown = null;
+            }
+        });
+        
+        function selectLanguage(langCode) {
+            if (globalDropdown) {
+                globalDropdown.remove();
+                globalDropdown = null;
+            }
+            const selected = langList.find(l => l.code === langCode);
+            if (selected) {
+                document.getElementById('selectedFlag').innerHTML = selected.flag;
+                document.getElementById('selectedLangName').innerHTML = selected.name;
+            }
+            setLanguage(langCode);
+        }
+        
+        function updateSelectedLanguageDisplay() {
+            const currentLang = localStorage.getItem('language') || getSystemLanguage();
+            const selected = langList.find(l => l.code === currentLang) || langList[0];
+            document.getElementById('selectedFlag').innerHTML = selected.flag;
+            document.getElementById('selectedLangName').innerHTML = selected.name;
+        }
+        
+        function updateUITexts() {
+            document.getElementById('settingsTitle').innerHTML = t('settings');
+            document.getElementById('backText').innerHTML = t('back');
+            document.getElementById('languageSelectTitle').innerHTML = t('language_select');
+            document.getElementById('gameLanguageLabel').innerHTML = t('game_language');
+            document.getElementById('soundSettingsTitle').innerHTML = t('sound_settings');
+            document.getElementById('musicLabel').innerHTML = t('music');
+            document.getElementById('soundEffectsLabel').innerHTML = t('sound_effects');
+            document.getElementById('gameSettingsTitle').innerHTML = t('game_settings');
+            document.getElementById('skipLevelLabel').innerHTML = t('skip_level') + ' (8 ' + t('coins') + ')';
+            document.getElementById('skipBtnText').innerHTML = t('skip_level');
+            document.getElementById('vibrationLabel').innerHTML = t('vibration');
+            document.getElementById('difficultyLabel').innerHTML = t('difficulty');
+            document.getElementById('normalText').innerHTML = t('normal');
+            document.getElementById('aboutTitle').innerHTML = t('about');
+            document.getElementById('gameDevText').innerHTML = '🎮 ' + t('game_dev');
+            document.getElementById('supportTitle').innerHTML = t('support');
+            document.getElementById('faqTitle').innerHTML = t('faq');
+            document.getElementById('faqDesc').innerHTML = t('faq');
+            document.getElementById('contactTitle').innerHTML = t('contact');
+            document.getElementById('contactDesc').innerHTML = t('contact');
+            document.getElementById('suggestionTitle').innerHTML = t('suggestion');
+            document.getElementById('suggestionDesc').innerHTML = t('suggestion');
+            document.getElementById('bugTitle').innerHTML = t('bug_report');
+            document.getElementById('bugDesc').innerHTML = t('bug_report');
+            document.getElementById('rateTitle').innerHTML = t('rate_game');
+            document.getElementById('rateDesc').innerHTML = t('rate_game');
+            document.getElementById('gameInfoTitle').innerHTML = t('game_info');
+            document.getElementById('versionLabel').innerHTML = t('version');
+            document.getElementById('totalLevelsLabel').innerHTML = t('total_levels');
+            document.getElementById('developerLabel').innerHTML = t('developer');
+            document.getElementById('formTitle').innerHTML = t('suggestion');
+            document.getElementById('sendEmailBtn').innerHTML = t('send');
+            document.getElementById('cancelBtn').innerHTML = t('cancel');
+            document.getElementById('faqModalTitle').innerHTML = t('faq_title');
+            document.getElementById('faq1_q').innerHTML = t('faq1_q');
+            document.getElementById('faq1_a').innerHTML = t('faq1_a');
+            document.getElementById('faq2_q').innerHTML = t('faq2_q');
+            document.getElementById('faq2_a').innerHTML = t('faq2_a');
+            document.getElementById('faq3_q').innerHTML = t('faq3_q');
+            document.getElementById('faq3_a').innerHTML = t('faq3_a');
+            document.getElementById('faq4_q').innerHTML = t('faq4_q');
+            document.getElementById('faq4_a').innerHTML = t('faq4_a');
+            document.getElementById('faq5_q').innerHTML = t('faq5_q');
+            document.getElementById('faq5_a').innerHTML = t('faq5_a');
+            document.getElementById('faq6_q').innerHTML = t('faq6_q');
+            document.getElementById('faq6_a').innerHTML = t('faq6_a');
+            document.getElementById('faqCloseBtn').innerHTML = t('close');
+            
+            document.getElementById('userName').placeholder = t('your_name');
+            document.getElementById('userEmail').placeholder = t('your_email');
+            document.getElementById('userSubject').placeholder = t('subject');
+            document.getElementById('userMessage').placeholder = t('message');
+        }
+        
+        function loadSettings() {
+            const musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            const musicToggle = document.getElementById('musicToggle');
+            const soundToggle = document.getElementById('soundToggle');
+            if (musicToggle) musicToggle.checked = musicEnabled;
+            if (soundToggle) soundToggle.checked = soundEnabled;
+            const vibrationToggle = document.getElementById('vibrationToggle');
+            if (vibrationToggle) vibrationToggle.checked = localStorage.getItem('vibrationEnabled') !== 'false';
+            const bgMusic = document.getElementById('backgroundMusic');
+            if (bgMusic) {
+                if (musicEnabled) {
+                    bgMusic.play().catch(() => {});
+                } else {
+                    bgMusic.pause();
+                }
+            }
+        }
+        
+        function toggleMusic() {
+            const isEnabled = document.getElementById('musicToggle').checked;
+            localStorage.setItem('musicEnabled', isEnabled);
+            const bgMusic = document.getElementById('backgroundMusic');
+            if (bgMusic) {
+                if (isEnabled) {
+                    bgMusic.play().catch(() => {});
+                } else {
+                    bgMusic.pause();
+                }
+            }
+            playClickSound();
+            showToast(isEnabled ? t('music') + ' ' + t('on') : t('music') + ' ' + t('off'));
+        }
+        
+        function toggleSound() {
+            const isEnabled = document.getElementById('soundToggle').checked;
+            localStorage.setItem('soundEnabled', isEnabled);
+            playClickSound();
+            showToast(isEnabled ? t('sound_effects') + ' ' + t('on') : t('sound_effects') + ' ' + t('off'));
+        }
+        
+        function skipLevel() {
+            const coins = parseInt(localStorage.getItem('coins') || '50');
+            let currentLevel = parseInt(localStorage.getItem('currentLevel') || '1');
+            const maxLevel = 1000;
+            if (currentLevel >= maxLevel) {
+                showToast(t('max_level'), 'error');
+                return;
+            }
+            if (coins >= 8) {
+                localStorage.setItem('coins', coins - 8);
+                localStorage.setItem('currentLevel', currentLevel + 1);
+                showToast(t('level_skipped'));
+                playClickSound();
+                setTimeout(() => window.location.href = 'game.html', 1000);
+            } else { 
+                showToast(t('insufficient_coin'), 'error'); 
+            }
+        }
+        
+        function openSupport(type) {
+            currentType = type;
+            const modal = document.getElementById('formModal');
+            const title = document.getElementById('formTitle');
+            const subjectInput = document.getElementById('userSubject');
+            switch(type) {
+                case 'faq':
+                    document.getElementById('faqModal').classList.add('active');
+                    return;
+                case 'contact':
+                    title.innerHTML = '📧 ' + t('contact');
+                    subjectInput.value = 'Fruit Combine - ' + t('contact');
+                    document.getElementById('userMessage').placeholder = t('message');
+                    break;
+                case 'suggestion':
+                    title.innerHTML = '💡 ' + t('suggestion');
+                    subjectInput.value = 'Fruit Combine - ' + t('suggestion');
+                    document.getElementById('userMessage').placeholder = t('message');
+                    break;
+                case 'bug':
+                    title.innerHTML = '🐛 ' + t('bug_report');
+                    subjectInput.value = 'Fruit Combine - ' + t('bug_report');
+                    document.getElementById('userMessage').placeholder = t('message');
+                    break;
+                case 'rate':
+                    window.open('https://play.google.com/store/apps/details?id=com.fruitcombine.game', '_blank');
+                    showToast('⭐ ' + t('thank_you'));
+                    return;
+            }
+            modal.classList.add('active');
+            playClickSound();
+        }
+        
+        function closeFormModal() {
+            document.getElementById('formModal').classList.remove('active');
+            document.getElementById('userName').value = '';
+            document.getElementById('userEmail').value = '';
+            document.getElementById('userMessage').value = '';
+        }
+        
+        function closeFaqModal() {
+            document.getElementById('faqModal').classList.remove('active');
+        }
+        
+        document.getElementById('sendEmailBtn').addEventListener('click', function() {
+            const name = document.getElementById('userName').value;
+            const email = document.getElementById('userEmail').value;
+            const subject = document.getElementById('userSubject').value;
+            const message = document.getElementById('userMessage').value;
+            if (!name || !email || !message) {
+                showToast(t('fill_fields'), 'error');
+                return;
+            }
+            const sendBtn = document.getElementById('sendEmailBtn');
+            const originalText = sendBtn.innerHTML;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loading-spinner"></span> ' + t('sending');
+            emailjs.send(
+                "service_yjqm0pc",
+                "template_cf4572c",
+                {
+                    name: name,
+                    email: email,
+                    subject: subject,
+                    message: message,
+                    date: new Date().toLocaleString('tr-TR')
+                }
+            ).then(
+                function(response) {
+                    showToast(t('send_success'));
+                    closeFormModal();
+                },
+                function(error) {
+                    console.error('EmailJS Hatası:', error);
+                    showToast(t('send_error'), 'error');
+                }
+            ).finally(() => {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = originalText;
+            });
+        });
+        
+        function playClickSound() {
+            const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+            if (!soundEnabled) return;
+            const clickSound = document.getElementById('clickSound');
+            if (clickSound) { 
+                clickSound.currentTime = 0; 
+                clickSound.play().catch(()=>{}); 
+            }
+        }
+        
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast-message ${type === 'error' ? 'error' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            updateSelectedLanguageDisplay();
+            updateUITexts();
+            const selectedLangDiv = document.getElementById('selectedLangDisplay');
+            if (selectedLangDiv) {
+                selectedLangDiv.addEventListener('click', toggleLanguageDropdown);
+            }
+            const currentLang = localStorage.getItem('language') || getSystemLanguage();
+            if (currentLang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+        });
+    </script>
+</body>
+</html>

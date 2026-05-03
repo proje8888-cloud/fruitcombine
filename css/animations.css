@@ -1,0 +1,27 @@
+/* Bomba Patlama Efekti */
+.explosion {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, #ff5722, transparent);
+    border-radius: 50%;
+    animation: explode 0.5s ease-out forwards;
+}
+
+@keyframes explode {
+    0% { transform: scale(0.1); opacity: 1; }
+    100% { transform: scale(3); opacity: 0; }
+}
+
+/* Kilitli Seviye Görünümü */
+.level-node.locked {
+    background: #555;
+    filter: grayscale(1);
+    cursor: not-allowed;
+}
+
+.level-node.unlocked {
+    background: #ffeb3b;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+}

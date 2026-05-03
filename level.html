@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <script src="js/translations.js"></script>
+<script>
+    function applyLanguageToLevel() {
+        const currentLang = localStorage.getItem('language') || getSystemLanguage();
+        if (currentLang === 'ar') {
+            document.documentElement.setAttribute('dir', 'rtl');
+        } else {
+            document.documentElement.setAttribute('dir', 'ltr');
+        }
+        
+        const titleEl = document.querySelector('.level-header h1');
+        if (titleEl) titleEl.innerHTML = t('select_level');
+        
+        const backBtn = document.querySelector('.back-btn span');
+        if (backBtn) backBtn.innerHTML = t('back');
+        
+        const scrollHint = document.querySelector('.scroll-hint');
+        if (scrollHint) scrollHint.innerHTML = '⬇️ ' + t('scroll_down') + ' ⬇️';
+        
+        const currentLevelText = document.getElementById('currentLevelText');
+        if (currentLevelText) {
+            const level = localStorage.getItem('currentLevel') || '1';
+            currentLevelText.innerHTML = t('current_level') + ': <span id="currentLevelDisplay">' + level + '</span>';
+        }
+        
+        const totalStarsText = document.getElementById('totalStarsText');
+        if (totalStarsText) {
+            let total = 0;
+            for (let i = 1; i <= 100; i++) {
+                const stars = localStorage.getItem(`level_${i}_stars`);
+                if (stars) total += parseInt(stars);
+            }
+            totalStarsText.innerHTML = '⭐ ' + t('total_stars') + ': <span id="totalStarsDisplay">' + total + '</span>';
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', applyLanguageToLevel);
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Fruit Combine - Seviyeler</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .level-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 800px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 15px;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .level-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            color: white;
+            position: sticky;
+            top: 0;
+            background: rgba(0,0,0,0.5);
+            padding: 12px 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        
+        .level-header h1 {
+            font-size: 24px;
+            text-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+        }
+        
+        .back-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 18px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .back-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .coin-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 6px 15px;
+            border-radius: 40px;
+            box-shadow: 0 4px 0 #B8860B;
+        }
+        
+        .coin-img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            vertical-align: middle;
+        }
+        
+        .coin-amount {
+            font-weight: bold;
+            color: #333;
+            font-size: 18px;
+        }
+        
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 10px 0 20px;
+        }
+        
+        .level-card {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 4px 0 #4a3f6e;
+            cursor: pointer;
+            transition: all 0.1s;
+            position: relative;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        .level-card.locked {
+            background: #444;
+            box-shadow: 0 4px 0 #333;
+            color: #888;
+            cursor: not-allowed;
+        }
+        
+        .level-card.completed {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            box-shadow: 0 4px 0 #2d6a2d;
+        }
+        
+        .level-card.current {
+            border: 3px solid #FFD700;
+            transform: scale(1.02);
+        }
+        
+        .level-card:active:not(.locked) {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+        
+        .level-number {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+        
+        .level-stars {
+            font-size: 10px;
+            color: #FFD700;
+            letter-spacing: 1px;
+        }
+        
+        .lock-icon {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            font-size: 12px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .page-btn {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 16px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .page-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        
+        .page-info {
+            color: white;
+            font-size: 16px;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        [dir="rtl"] .level-header {
+            flex-direction: row-reverse;
+        }
+        
+        [dir="rtl"] .back-btn {
+            transform: scaleX(-1);
+        }
+        
+        [dir="rtl"] .level-grid {
+            direction: rtl;
+        }
+        
+        [dir="rtl"] .lock-icon {
+            right: auto;
+            left: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="level-container">
+        <div class="level-header">
+            <button class="back-btn" onclick="window.location.href='game.html'">← <span id="backText">Geri</span></button>
+            <h1 id="levelsTitle">SEVİYELER</h1>
+            <div class="coin-info">
+                <img src="https://i.postimg.cc/pTFNR8TF/Jeton.png" alt="Jeton" class="coin-img">
+                <span class="coin-amount" id="coinAmount">50</span>
+            </div>
+        </div>
+        
+        <div class="level-grid" id="levelGrid"></div>
+        
+        <div class="pagination">
+            <button class="page-btn" id="prevBtn" onclick="prevPage()"><span id="prevText">◀ Önceki</span></button>
+            <span class="page-info" id="pageInfo">Sayfa 1 / 10</span>
+            <button class="page-btn" id="nextBtn" onclick="nextPage()"><span id="nextText">Sonraki ▶</span></button>
+        </div>
+    </div>
+    
+    <script src="js/translations.js"></script>
+    <script>
+        let currentPage = 1;
+        const levelsPerPage = 50;
+        
+        // ============ ARAYÜZ METİNLERİNİ GÜNCELLE ============
+        function updateUITexts() {
+            if (typeof t === 'undefined') return;
+            
+            document.getElementById('backText').innerHTML = t('back');
+            document.getElementById('levelsTitle').innerHTML = t('show_levels');
+            document.getElementById('prevText').innerHTML = `◀ ${t('back')}`;
+            document.getElementById('nextText').innerHTML = `${t('next_level')} ▶`;
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCoins();
+            renderLevels();
+            updateUITexts();
+            
+            // localStorage değiştiğinde coin güncelle
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'coins') {
+                    loadCoins();
+                }
+            });
+            
+            // RTL kontrolü
+            const currentLang = localStorage.getItem('language') || 'tr';
+            if (currentLang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            }
+        });
+        
+        function loadCoins() {
+            const coins = localStorage.getItem('coins');
+            document.getElementById('coinAmount').textContent = coins ? coins : '50';
+        }
+        
+        function getCurrentLevel() {
+            return parseInt(localStorage.getItem('currentLevel') || '1');
+        }
+        
+        function renderLevels() {
+            const grid = document.getElementById('levelGrid');
+            const startLevel = (currentPage - 1) * levelsPerPage + 1;
+            const endLevel = startLevel + levelsPerPage - 1;
+            const currentLevel = getCurrentLevel();
+            
+            grid.innerHTML = '';
+            
+            for (let i = startLevel; i <= endLevel; i++) {
+                const card = document.createElement('div');
+                card.className = 'level-card';
+                
+                if (i > currentLevel) {
+                    card.classList.add('locked');
+                } else if (i < currentLevel) {
+                    card.classList.add('completed');
+                }
+                
+                if (i === currentLevel) {
+                    card.classList.add('current');
+                }
+                
+                let stars = '';
+                if (i < currentLevel) {
+                    const starCount = localStorage.getItem(`level_${i}_stars`) || '3';
+                    stars = '⭐'.repeat(parseInt(starCount));
+                } else if (i === currentLevel) {
+                    stars = '⭐';
+                }
+                
+                card.innerHTML = `
+                    <span class="level-number">${i}</span>
+                    <span class="level-stars">${stars}</span>
+                    ${i > currentLevel ? '<span class="lock-icon">🔒</span>' : ''}
+                `;
+                
+                card.onclick = () => {
+                    if (i <= currentLevel) {
+                        localStorage.setItem('currentLevel', i);
+                        window.location.href = 'game.html';
+                    }
+                };
+                
+                grid.appendChild(card);
+            }
+            
+            const totalPages = Math.ceil(1000 / levelsPerPage);
+            const pageText = typeof t !== 'undefined' ? t('page') : 'Sayfa';
+            document.getElementById('pageInfo').textContent = `${pageText} ${currentPage} / ${totalPages}`;
+            
+            document.getElementById('prevBtn').classList.toggle('disabled', currentPage === 1);
+            document.getElementById('nextBtn').classList.toggle('disabled', currentPage >= totalPages);
+        }
+        
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderLevels();
+            }
+        }
+        
+        function nextPage() {
+            if (currentPage < Math.ceil(1000 / levelsPerPage)) {
+                currentPage++;
+                renderLevels();
+            }
+        }
+    </script>
+</body>
+</html>

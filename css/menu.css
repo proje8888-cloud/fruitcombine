@@ -1,0 +1,110 @@
+/* Sade menü */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Telefon container */
+.phone-container {
+    width: 375px;
+    height: 812px;
+    background-image: url('https://i.hizliresim.com/axc0b5x.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+    border: 12px solid #222;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 100px; /* Aşağıdan boşluk */
+}
+
+/* Oyna Butonu - KÜÇÜK */
+.play-btn {
+    background: linear-gradient(to bottom, #FF6347, #FF4500);
+    color: white;
+    border: none;
+    border-radius: 25px; /* Daha küçük yuvarlak */
+    padding: 15px 40px; /* Daha küçük padding */
+    font-size: 1.8rem; /* Daha küçük yazı */
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.7),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: pulse 2s infinite;
+}
+
+.play-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.9),
+        inset 0 2px 0 rgba(255, 255, 255, 0.4);
+    background: linear-gradient(to bottom, #FF7256, #FF5500);
+}
+
+.play-btn i {
+    font-size: 1.5rem; /* Daha küçük ikon */
+}
+
+/* Animasyon */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.03);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Mobil uyum */
+@media (max-width: 400px) {
+    .phone-container {
+        width: 100%;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        padding-bottom: 80px;
+    }
+    
+    .play-btn {
+        padding: 12px 35px;
+        font-size: 1.6rem;
+    }
+}
+
+/* Yatay mod için */
+@media (max-height: 600px) {
+    .phone-container {
+        height: 600px;
+        padding-bottom: 60px;
+    }
+    
+    .play-btn {
+        padding: 10px 30px;
+        font-size: 1.4rem;
+    }
+}
