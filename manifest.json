@@ -1,0 +1,34 @@
+{
+    "name": "Fruit Combine",
+    "short_name": "FruitCombine",
+    "start_url": "game.html",
+    "display": "standalone",
+    "description": "Meyveleri topla, level atla, rekor kır! Yukarıdan düşen meyveleri tıkla ve hedefleri tamamla.",
+    "lang": "tr",
+    "dir": "auto",
+    "theme_color": "#4CAF50",
+    "background_color": "#000000",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "https://www.pwabuilder.com/assets/icons/icon_512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "https://www.pwabuilder.com/assets/icons/icon_192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "https://www.pwabuilder.com/assets/screenshots/screen1.png",
+            "sizes": "2880x1800",
+            "type": "image/png",
+            "description": "Fruit Combine oyun ekranı"
+        }
+    ]
+}
